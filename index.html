@@ -125,7 +125,35 @@ label.f{display:block;margin:12px 0 0}label.f>span{display:block;font-size:12.5p
 #cv p{margin:0}#cv ul{margin:4px 0 0;padding-left:18px}#cv .cvi{margin-bottom:10px}
 #cv .cvr{display:flex;justify-content:space-between;gap:8px}#cv .cvr span,#cv .cvs{color:#555;font-size:13px}
 [hidden]{display:none!important}
-@media (max-width:359px){nav button{font-size:11px}.kpis{grid-template-columns:1fr 1fr}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,input,select,textarea,label,.cl,.pc,.ti,.chip2{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+nav .brand,nav kbd,nav .side-extra{display:none}
+.g2{display:grid;gap:0 12px;align-items:start}
+.paper{max-width:820px;margin-left:auto;margin-right:auto}
+@media (hover:hover) and (pointer:fine){.cl:hover{border-color:#3a3b42}.pc:hover,.ti:hover{background:rgba(255,255,255,.025)}.btn:hover,#fm button:hover{border-color:#3a3b42}nav button:hover{color:var(--tx)}.chip2:hover,.seg button:hover{border-color:#3a3b42}}
+@media (min-width:760px){.w{max-width:880px;padding:0 24px}.g2{grid-template-columns:1fr 1fr}.g2>.c{margin:6px 0}
+.ins{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;margin:8px 0;padding:0}.ins .c{max-width:none}
+.fr{margin:10px 0 4px;padding:0;flex-wrap:wrap}}
+@media (min-width:1024px){
+body{padding-left:232px;padding-bottom:48px}
+.w{max-width:1120px;padding:0 32px}
+nav{top:0;right:auto;width:232px;flex-direction:column;gap:4px;border-top:0;border-right:1px solid var(--bd2);background:#060607;padding:calc(18px + env(safe-area-inset-top)) 12px 20px max(12px,env(safe-area-inset-left))}
+nav .brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:750;letter-spacing:-.02em;padding:6px 12px 22px}
+nav .brand img{border-radius:8px}
+nav button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;min-height:46px;padding:0 12px;border-radius:12px;font-size:15px;color:var(--mu)}
+nav button svg{width:20px;height:20px}nav button span{flex:1;text-align:left}
+nav button.on{background:var(--c2);color:var(--tx)}
+nav kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:6px;border:1px solid var(--bd2);font:600 11px/1 system-ui,sans-serif;color:var(--fa)}
+nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);border-radius:0;padding-top:14px}
+#v{columns:2;column-gap:28px}#v>*{column-span:all}
+#v>section{column-span:none;break-inside:avoid;display:block;padding:1px 0 8px}
+#fab{right:max(32px,calc((100vw - 232px - 1120px)/2 + 32px));bottom:32px}
+#fm{right:max(32px,calc((100vw - 232px - 1120px)/2 + 32px));bottom:100px}
+#toast{bottom:40px;left:calc(50% + 116px)}
+.hero{gap:24px}}
+@media (min-width:1024px) and (hover:none){nav kbd{display:none}}
+@media print{body{padding:0!important}}
+@media (max-width:359px){.hero>div:first-child{width:88px!important;height:88px!important}.hero>div:first-child svg{width:88px;height:88px}.hero{gap:10px}nav button{font-size:11px}.kpis{grid-template-columns:1fr 1fr}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{body{background:#fff;padding:0}header,nav,#fab,#fm,#toast,.np{display:none!important}main.w{max-width:none;padding:0}#v>*:not(#cvp){display:none!important}#cvp{margin:0;padding:0;border-radius:0}#v.an>*{animation:none}}
 </style></head><body>
@@ -134,13 +162,13 @@ label.f{display:block;margin:12px 0 0}label.f>span{display:block;font-size:12.5p
 <main class="w"><div id="v"></div></main>
 <div id="fm" hidden><button onclick="fab(0);openE('win')">🏆 Win</button><button onclick="fab(0);openE('cpd')">📚 Learning</button><button onclick="fab(0);openE('goal')">🎯 Goal</button></div>
 <button id="fab" aria-label="Add" onclick="fab()">+</button><div id="toast" hidden></div>
-<nav aria-label="Sections"><button data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span></button><button data-t="goals" onclick="go('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span>Goals</span></button><button data-t="acca" onclick="go('acca')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>ACCA</span></button><button data-t="journal" onclick="go('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 9h8M8 13h6"/></svg><span>Journal</span></button><button data-t="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Profile</span></button></nav>
+<nav aria-label="Sections"><div class="brand" aria-hidden="true"><img src="icon-192.png" width="28" height="28" alt="">Ladder</div><button data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span><kbd>1</kbd></button><button data-t="goals" onclick="go('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span>Goals</span><kbd>2</kbd></button><button data-t="acca" onclick="go('acca')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>ACCA</span><kbd>3</kbd></button><button data-t="journal" onclick="go('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 9h8M8 13h6"/></svg><span>Journal</span><kbd>4</kbd></button><button data-t="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Profile</span><kbd>5</kbd></button><button class="side-extra" onclick="openSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span><kbd>,</kbd></button></nav>
 <dialog id="ed"><form id="ef"><h2 id="et"></h2><div id="eb"></div>
 <div class="row mt"><button type="button" class="g" onclick="$('#ed').close()">Cancel</button><button type="button" class="d" id="ex" onclick="delE()">Delete</button><button>Save</button></div></form></dialog>
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.17b',CODE_V=1;
+const APP_V='2026.11.17c',CODE_V=1;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
@@ -244,9 +272,9 @@ ${passed.length?`<div class="chips">${passed.map(p=>`<span class="chip2 s0">✓ 
 ${kpis([['Goals',Math.round(gp)+'%'],['Next exam',ne?E(ne.c)+' · '+dd(ne.date)+'d':'—',ne&&dd(ne.date)<=30?'s1':''],['Learning '+y,num(hrs)+' h']])}
 ${nudge?`<div class="c cl" style="border-color:var(--amb)" onclick="openE('win')"><b>🏆 ${lastWin?'No wins logged for '+Math.abs(dd(lastWin))+' days':'Log your first win'}</b><div class="m">Small things count. Note the impact while it is fresh. It feeds your appraisal and resume.</div></div>`:''}
 <div class="ins"><div class="c"><span class="m">Wins this year</span><b>${wy}</b><span class="m">${W.length} all time</span></div><div class="c"><span class="m">Open goals</span><b>${og.length}</b><span class="m">${G.length-og.length} done</span></div><div class="c"><span class="m">Skills at target</span><b>${atT}/${S.length}</b><span class="m">Profile › Skills</span></div></div>
-${up.length?sh('Coming up')+'<div class="c">'+up.map(u=>{const n=dd(u.d);return `<div class="pc" onclick="openE('${u.k}','${E(u.id)}')"><div style="flex:1;min-width:0"><b>${E(u.t)}</b><div class="m">${E(u.s||'')} · ${fd(u.d)}</div></div><span class="tag ${n<0?'s2':n<=14?'s1':'s3'}">${inD(n)}</span></div>`}).join('')+'</div>':''}
-${sh('Next actions')}${og.filter(g=>g.next).length?'<div class="c">'+og.filter(g=>g.next).sort(byDue).map(g=>`<div class="pc" onclick="openE('goal','${E(g.id)}')"><span class="tag s3">${E(g.area||'Goal')}</span><div style="flex:1;min-width:0">${E(g.next)}<div class="m">${E(g.title)}</div></div></div>`).join('')+'</div>':'<p class="m">No open actions. Add a next step to a goal.</p>'}
-${sh('Biggest skill gaps')}${gap.length?'<div class="c">'+gap.map(s=>`<div class="pc" onclick="SEG.profile='skills';go('profile')"><div style="flex:1;min-width:0">${E(s.name)}<div class="bar"><i style="width:${s.lvl/5*100}%"></i></div></div><span class="tag s1">${s.lvl} → ${s.tgt}</span></div>`).join('')+'</div>':'<p class="m">No gaps. 🎉</p>'}`}
+${up.length?'<section>'+sh('Coming up')+'<div class="c">'+up.map(u=>{const n=dd(u.d);return `<div class="pc" onclick="openE('${u.k}','${E(u.id)}')"><div style="flex:1;min-width:0"><b>${E(u.t)}</b><div class="m">${E(u.s||'')} · ${fd(u.d)}</div></div><span class="tag ${n<0?'s2':n<=14?'s1':'s3'}">${inD(n)}</span></div>`}).join('')+'</div></section>':''}
+<section>${sh('Next actions')}${og.filter(g=>g.next).length?'<div class="c">'+og.filter(g=>g.next).sort(byDue).map(g=>`<div class="pc" onclick="openE('goal','${E(g.id)}')"><span class="tag s3">${E(g.area||'Goal')}</span><div style="flex:1;min-width:0">${E(g.next)}<div class="m">${E(g.title)}</div></div></div>`).join('')+'</div>':'<p class="m">No open actions. Add a next step to a goal.</p>'}</section>
+<section>${sh('Biggest skill gaps')}${gap.length?'<div class="c">'+gap.map(s=>`<div class="pc" onclick="SEG.profile='skills';go('profile')"><div style="flex:1;min-width:0">${E(s.name)}<div class="bar"><i style="width:${s.lvl/5*100}%"></i></div></div><span class="tag s1">${s.lvl} → ${s.tgt}</span></div>`).join('')+'</div>':'<p class="m">No gaps. 🎉</p>'}</section>`}
 
 function goalCard(g){const n=g.due?dd(g.due):null,d=+g.pct>=100;return `<div class="c cl" onclick="openE('goal','${E(g.id)}')"><div class="r"><b>${E(g.title)}</b><b class="${d?'s0':''}">${g.pct||0}%</b></div><div class="bar"><i style="width:${Math.min(100,g.pct||0)}%;${d?'background:var(--grn)':''}"></i></div>
 <div class="r"><span class="m">${E(g.area||'')}${g.next&&!d?' · Next: '+E(g.next):''}</span>${g.due&&!d?`<span class="tag ${n<0?'s2':n<=30?'s1':'s4'}">${n<0?'Overdue':sd(g.due)}</span>`:''}</div>
@@ -255,7 +283,7 @@ function bump(id,v){const g=get(id);if(!g)return;const was=+g.pct||0;g.pct=v>=10
 function goalsTab(){const G=live('goal'),F=G.filter(g=>GF==='All'||g.area===GF),o=F.filter(g=>+g.pct<100).sort(byDue),d=F.filter(g=>+g.pct>=100);
 return kpis([['Open',G.filter(g=>+g.pct<100).length],['Done',G.filter(g=>+g.pct>=100).length,'s0'],['Overdue',G.filter(g=>+g.pct<100&&g.due&&dd(g.due)<0).length,'s2']])+
 `<div class="fr">${['All',...AREAS].map(a=>`<span class="chip2${a===GF?' on':''}" onclick="GF='${a}';render()">${a}</span>`).join('')}</div>`+
-sh('In progress',o.length)+(o.length?o.map(goalCard).join(''):'<p class="m">No open goals here. Tap + to add one.</p>')+(d.length?sh('Done',d.length)+d.map(goalCard).join(''):'')}
+sh('In progress',o.length)+(o.length?'<div class="g2">'+o.map(goalCard).join('')+'</div>':'<p class="m">No open goals here. Tap + to add one.</p>')+(d.length?sh('Done',d.length)+'<div class="g2">'+d.map(goalCard).join('')+'</div>':'')}
 
 function accaTab(){const A=live('acca').sort((x,z)=>pOrd(x.c)-pOrd(z.c)),a=accaPct(),sat=A.filter(p=>['Passed','Failed'].includes(p.st)),pass=sat.filter(p=>p.st==='Passed'),sc=pass.filter(p=>p.score!==''&&p.score!=null&&+p.score>0),ne=nextExam();
 const lv=[...new Set(PAPERS.map(p=>p[2]))];
@@ -265,7 +293,7 @@ return `<div class="c glow mt"><div class="hero">${ring(a.pct,a.done+'/13','pape
 <div class="m">${lv.map((l,k)=>`<span style="color:${['#22e3ff','#4ade80','#fbbf24','#a78bfa'][k]}">■</span> ${l.replace(' – pick 2','')}`).join(' &nbsp; ')}</div></div>
 ${kpis([['Passed',pass.length,'s0'],['Pass rate',sat.length?Math.round(pass.length/sat.length*100)+'%':'—'],['Avg score',sc.length?Math.round(sum(sc,'score')/sc.length):'—']])}
 ${lv.map(l=>{const P0=A.filter(p=>p.l===l),need=l.startsWith('Options')?2:P0.length,dn=Math.min(need,P0.filter(p=>['Passed','Exempt'].includes(p.st)).length);
-return sh(l,dn+'/'+need)+'<div class="c">'+P0.map(p=>{const n=p.date?dd(p.date):null;return `<div class="pc" onclick="openE('acca','${E(p.id)}')"><span class="code ${stc(p.st)}">${E(p.c)}</span><div style="flex:1;min-width:0"><div>${E(p.n)}</div><div class="m">${p.st==='Booked'&&p.date?fd(p.date)+' · '+inD(n):p.date?fd(p.date):''}${p.score!==''&&p.score!=null&&+p.score>0?' · '+p.score+' marks':''}</div></div><span class="tag ${stc(p.st)}">${E(p.st)}</span></div>`}).join('')+'</div>'}).join('')}
+return '<section>'+sh(l,dn+'/'+need)+'<div class="c">'+P0.map(p=>{const n=p.date?dd(p.date):null;return `<div class="pc" onclick="openE('acca','${E(p.id)}')"><span class="code ${stc(p.st)}">${E(p.c)}</span><div style="flex:1;min-width:0"><div>${E(p.n)}</div><div class="m">${p.st==='Booked'&&p.date?fd(p.date)+' · '+inD(n):p.date?fd(p.date):''}${p.score!==''&&p.score!=null&&+p.score>0?' · '+p.score+' marks':''}</div></div><span class="tag ${stc(p.st)}">${E(p.st)}</span></div>`}).join('')+'</div></section>'}).join('')}
 <p class="m mt">Pass mark is 50. You need 13 papers: 9 Applied, 2 Strategic and 2 of the 4 options.</p>`}
 
 function tline(a,row,head){const g={};a.forEach(i=>{const k=(i.date||'').slice(0,7)||'—';(g[k]=g[k]||[]).push(i)});
@@ -288,10 +316,10 @@ let h=`<div class="seg np">${T.map(([k,l])=>`<button class="${s===k?'on':''}" on
 if(s==='cv'){const m=me();h+=`<div class="c np"><div class="btns"><button class="btn sm" onclick="openE('me','me')">✏️ Edit details</button><button class="btn sm pri" onclick="printCV()">🖨 Print / PDF</button><button class="btn sm" onclick="copyCV()">📋 Copy text</button></div>
 <label class="switch"><span>Include wins</span><input type="checkbox" ${m.cvw?'checked':''} onchange="setMe('cvw',this.checked?1:0)"></label><label class="switch"><span>Include training</span><input type="checkbox" ${m.cvl?'checked':''} onchange="setMe('cvl',this.checked?1:0)"></label>
 <p class="m" style="margin:0">Built from your Jobs, Education, ACCA, Skills (level 3+) and latest 5 wins.</p></div><div class="paper" id="cvp">${cvHTML()}</div>`}
-else if(s==='jobs'){const J=live('job').sort((a,b)=>(b.start||'').localeCompare(a.start||''));h+=`<button onclick="openE('job')" style="width:100%">+ Add job</button>`+(J.length?J.map(j=>`<div class="c cl" onclick="openE('job','${E(j.id)}')"><div class="r"><b>${E(j.title||'Untitled role')}</b>${j.end?'':'<span class="tag s3">Current</span>'}</div><div class="m">${E(j.co)}${j.loc?' · '+E(j.loc):''} · ${mon(j.start)||'?'} – ${mon(j.end)||'Present'}</div>${j.pts?`<div class="m mt">${j.pts.split('\n').filter(Boolean).length} key points</div>`:''}</div>`).join(''):'<p class="m mt">No jobs yet.</p>')}
-else if(s==='edu'){const Q=live('edu').sort((a,b)=>(b.end||'9').localeCompare(a.end||'9'));h+=`<button onclick="openE('edu')" style="width:100%">+ Add education</button>`+(Q.length?Q.map(e=>`<div class="c cl" onclick="openE('edu','${E(e.id)}')"><b>${E(e.qual||e.inst)}</b><div class="m">${E(e.inst)} · ${mon(e.start)||'?'} – ${mon(e.end)||'Present'}${e.grade?' · '+E(e.grade):''}</div></div>`).join(''):'<p class="m mt">No education yet.</p>')+'<p class="m">ACCA goes on your resume by itself from the ACCA tab.</p>'}
-else{const S=live('skill').sort((a,b)=>(b.tgt-b.lvl)-(a.tgt-a.lvl));h+=`<button onclick="openE('skill')" style="width:100%">+ Add skill</button><p class="m">Tap a dot to set your level (1 beginner → 5 expert). Amber ring = target.</p>`+
-S.map(k=>`<div class="c"><div class="r cl" onclick="openE('skill','${E(k.id)}')"><b>${E(k.name)}</b><span class="tag ${+k.lvl>=+k.tgt?'s0':'s1'}">${k.lvl} / ${k.tgt}</span></div><div class="dots">${[1,2,3,4,5].map(n=>`<button aria-label="Level ${n}" class="${n<=k.lvl?'on':''}${n===+k.tgt?' tg':''}" onclick="lvl('${E(k.id)}',${n})"></button>`).join('')}</div></div>`).join('')}
+else if(s==='jobs'){const J=live('job').sort((a,b)=>(b.start||'').localeCompare(a.start||''));h+=`<button onclick="openE('job')" style="width:100%">+ Add job</button>`+(J.length?'<div class="g2">'+J.map(j=>`<div class="c cl" onclick="openE('job','${E(j.id)}')"><div class="r"><b>${E(j.title||'Untitled role')}</b>${j.end?'':'<span class="tag s3">Current</span>'}</div><div class="m">${E(j.co)}${j.loc?' · '+E(j.loc):''} · ${mon(j.start)||'?'} – ${mon(j.end)||'Present'}</div>${j.pts?`<div class="m mt">${j.pts.split('\n').filter(Boolean).length} key points</div>`:''}</div>`).join('')+'</div>':'<p class="m mt">No jobs yet.</p>')}
+else if(s==='edu'){const Q=live('edu').sort((a,b)=>(b.end||'9').localeCompare(a.end||'9'));h+=`<button onclick="openE('edu')" style="width:100%">+ Add education</button>`+(Q.length?'<div class="g2">'+Q.map(e=>`<div class="c cl" onclick="openE('edu','${E(e.id)}')"><b>${E(e.qual||e.inst)}</b><div class="m">${E(e.inst)} · ${mon(e.start)||'?'} – ${mon(e.end)||'Present'}${e.grade?' · '+E(e.grade):''}</div></div>`).join('')+'</div>':'<p class="m mt">No education yet.</p>')+'<p class="m">ACCA goes on your resume by itself from the ACCA tab.</p>'}
+else{const S=live('skill').sort((a,b)=>(b.tgt-b.lvl)-(a.tgt-a.lvl));h+=`<button onclick="openE('skill')" style="width:100%">+ Add skill</button><p class="m">Tap a dot to set your level (1 beginner → 5 expert). Amber ring = target.</p><div class="g2">`+
+S.map(k=>`<div class="c"><div class="r cl" onclick="openE('skill','${E(k.id)}')"><b>${E(k.name)}</b><span class="tag ${+k.lvl>=+k.tgt?'s0':'s1'}">${k.lvl} / ${k.tgt}</span></div><div class="dots">${[1,2,3,4,5].map(n=>`<button aria-label="Level ${n}" class="${n<=k.lvl?'on':''}${n===+k.tgt?' tg':''}" onclick="lvl('${E(k.id)}',${n})"></button>`).join('')}</div></div>`).join('')+'</div>'}
 return h}
 function lvl(id,n){const s=get(id);if(!s)return;const hit=n>=+s.tgt&&+s.lvl<+s.tgt;s.lvl=n;s.updated=Date.now();commit();buzz(8);if(hit){confetti();toast('Target reached: '+s.name)}}
 function setMe(k,v){const m=get('me');m[k]=v;m.updated=Date.now();commit()}
@@ -415,7 +443,10 @@ merge(list);commit();toast('Imported '+list.length+' records')}catch(e){logE('im
 // ---------- start ----------
 addEventListener('popstate',()=>{const d=document.querySelector('dialog[open]');if(d){d.close();return}const h=location.hash.slice(1);
 if(h==='add-win'||h==='add-learning'){go('journal');SEG.journal=h==='add-win'?'win':'cpd';render();return openE(h==='add-win'?'win':'cpd')}if(SL[h]&&h!==tab)go(h,1)});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')fab(0)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')return fab(0);
+if(e.metaKey||e.ctrlKey||e.altKey||document.querySelector('dialog[open]')||/^(INPUT|TEXTAREA|SELECT)$/.test((e.target||{}).tagName||''))return;
+const T=['home','goals','acca','journal','profile'],k=e.key.toLowerCase();
+if(/^[1-5]$/.test(k))go(T[+k-1]);else if(k==='g')openE('goal');else if(k==='w')openE('win');else if(k==='l')openE('cpd');else if(k==='n')fab();else if(k===',')openSettings();else return;e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&D.cfg.url&&Date.now()-(D.cfg.lastAt||0)>60000)sync()});
 addEventListener('online',()=>{if(D.cfg.url)sync()});
 load().then(()=>{const h=location.hash.slice(1);if(SL[h])tab=h;render();syIdle();
