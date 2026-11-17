@@ -1,22 +1,23 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Ladder – Career development tracker</title>
+<title>NextRole – Career development tracker</title>
 <meta name="description" content="Track goals, ACCA papers, wins, learning hours and build your resume. Works offline on iPhone, Android and PC.">
 <meta name="robots" content="noindex, nofollow">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Ladder">
-<meta property="og:title" content="Ladder – Career development tracker">
+<meta property="og:site_name" content="NextRole">
+<meta property="og:title" content="NextRole – Career development tracker">
 <meta property="og:description" content="Track goals, ACCA papers, wins, learning hours and build your resume.">
-<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; worker-src 'self'">
 <script>if(location.protocol==='http:'&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))location.replace('https:'+location.href.slice(5))</script>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Ladder">
+<meta name="apple-mobile-web-app-title" content="NextRole">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 :root{color-scheme:dark;--bg:#000;--card:#101113;--c2:#16171a;--tx:#f3f3f4;--mu:#8d8f97;--fa:#5c5e66;--ac:#e8e8e8;--bd:#1f2024;--bd2:#24252a;--bl:#60a5fa;--red:#f87171;--amb:#fbbf24;--grn:#4ade80;--cy:#22e3ff;--vi:#a78bfa}
@@ -157,18 +158,18 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{body{background:#fff;padding:0}header,nav,#fab,#fm,#toast,.np{display:none!important}main.w{max-width:none;padding:0}#v>*:not(#cvp){display:none!important}#cvp{margin:0;padding:0;border-radius:0}#v.an>*{animation:none}}
 </style></head><body>
-<header><h1 class="sr">Ladder – career development tracker</h1><div class="w"><div><div class="av2" id="av" aria-hidden="true">L</div><div style="min-width:0"><div id="nm">Ladder</div><small id="sub"></small></div></div>
+<header><h1 class="sr">NextRole – career development tracker</h1><div class="w"><div><div class="av2" id="av" aria-hidden="true">N</div><div style="min-width:0"><div id="nm">NextRole</div><small id="sub"></small></div></div>
 <div><div id="odo" role="button" tabindex="0" title="ACCA progress" onclick="go('acca')"></div><div class="hr"><button class="ib" type="button" aria-label="Settings" onclick="openSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><button class="pill" id="sy" type="button" title="Sync status. Tap for settings" onclick="openSettings()"><span class="dot" aria-hidden="true"></span><span class="sr">Sync status: </span><span id="syt">Local only</span></button></div></div></div></header>
 <main class="w"><div id="v"></div></main>
 <div id="fm" hidden><button onclick="fab(0);openE('win')">🏆 Win</button><button onclick="fab(0);openE('cpd')">📚 Learning</button><button onclick="fab(0);openE('goal')">🎯 Goal</button></div>
 <button id="fab" aria-label="Add" onclick="fab()">+</button><div id="toast" hidden></div>
-<nav aria-label="Sections"><div class="brand" aria-hidden="true"><img src="icon-192.png" width="28" height="28" alt="">Ladder</div><button data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span><kbd>1</kbd></button><button data-t="goals" onclick="go('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span>Goals</span><kbd>2</kbd></button><button data-t="acca" onclick="go('acca')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>ACCA</span><kbd>3</kbd></button><button data-t="journal" onclick="go('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 9h8M8 13h6"/></svg><span>Journal</span><kbd>4</kbd></button><button data-t="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Profile</span><kbd>5</kbd></button><button class="side-extra" onclick="openSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span><kbd>,</kbd></button></nav>
+<nav aria-label="Sections"><div class="brand" aria-hidden="true"><img src="icon-192.png" width="28" height="28" alt="">NextRole</div><button data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Home</span><kbd>1</kbd></button><button data-t="goals" onclick="go('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span>Goals</span><kbd>2</kbd></button><button data-t="acca" onclick="go('acca')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>ACCA</span><kbd>3</kbd></button><button data-t="journal" onclick="go('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><path d="M8 9h8M8 13h6"/></svg><span>Journal</span><kbd>4</kbd></button><button data-t="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Profile</span><kbd>5</kbd></button><button class="side-extra" onclick="openSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span><kbd>,</kbd></button></nav>
 <dialog id="ed"><form id="ef"><h2 id="et"></h2><div id="eb"></div>
 <div class="row mt"><button type="button" class="g" onclick="$('#ed').close()">Cancel</button><button type="button" class="d" id="ex" onclick="delE()">Delete</button><button>Save</button></div></form></dialog>
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.17d',CODE_V=1;
+const APP_V='2026.11.17e',CODE_V=1;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
@@ -258,7 +259,7 @@ ensure();VER++;save()}
 
 // ---------- render ----------
 function render(){const m=me(),a=accaPct();
-$('#nm').textContent=m.name||'Ladder';$('#av').textContent=(m.name||'L').trim().charAt(0).toUpperCase()||'L';
+$('#nm').textContent=m.name||'NextRole';$('#av').textContent=(m.name||'N').trim().charAt(0).toUpperCase()||'N';
 $('#sub').textContent=m.target?'Next: '+m.target:m.role||'Set your role in Profile';
 $('#odo').innerHTML=a.done+'/13<small>ACCA</small>';
 document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
@@ -381,7 +382,7 @@ function meWire(){const md=$('#e_tmode'),r=$('#e_role'),t=$('#e_target'),pv=$('#
 const up=()=>{const a=md.value==='auto',nx=autoNext(r.value),i=roleLvl(r.value),fn=roleFn(r.value),pa=rolePath(r.value);
 dl.innerHTML=LAD.slice(Math.max(0,i+1)).flatMap((x,k)=>{const j=Math.max(0,i+1)+k;return fn&&j<6?[withFn(j,fn),x]:[x]}).map(x=>`<option value="${E(x)}">`).join('');
 t.readOnly=a;t.style.opacity=a?.6:1;if(a)t.value=nx;else if(t.value===nx&&mine!==nx)t.value=mine;
-pv.innerHTML=a?(nx?'Ladder picks the next step up from your current role and updates it when you change your role.'+(pa.length>1?'<br>Path: '+pa.map(E).join(' → '):''):'<span class="s1">Could not tell your level from the current role. Include a title such as Executive, Assistant Manager or Manager, or choose it yourself.</span>'):
+pv.innerHTML=a?(nx?'NextRole picks the next step up from your current role and updates it when you change your role.'+(pa.length>1?'<br>Path: '+pa.map(E).join(' → '):''):'<span class="s1">Could not tell your level from the current role. Include a title such as Executive, Assistant Manager or Manager, or choose it yourself.</span>'):
 'Type any role, or pick a suggestion.'+(nx?' Suggested next step: <a href="#" style="color:var(--cy)" onclick="event.preventDefault();$(\'#e_target\').value=this.textContent">'+E(nx)+'</a>':'')};
 md.onchange=up;r.oninput=up;t.oninput=()=>{mine=t.value};up()}
 function delE(){const it=get(editId);if(!it)return;it.deleted=1;it.updated=Date.now();$('#ed').close();save();render();toast('Deleted',()=>{it.deleted=0;it.updated=Date.now();commit();toast('Restored')})}
@@ -434,7 +435,7 @@ ${c.token&&c.token.length<16?'<p class="m" style="color:var(--amb)">Your secret 
 <h3>Logs</h3><p class="m">${LOG.length?LOG.length+' problem'+(LOG.length>1?'s':'')+' recorded on this device. Script errors also go to the Log tab of your Google Sheet.':'No problems recorded. 👍'}</p>
 ${lg.map(x=>`<div class="logline">${new Date(x.t).toLocaleString('en-GB')} · ${E(x.a)} · ${E(x.m)}</div>`).join('')}
 ${LOG.length>4?`<button class="btn sm mt" onclick="LOGALL=!LOGALL;openSettings()">${LOGALL?'Show less':'Show all'}</button>`:''}${LOG.length?' <button class="btn sm mt" onclick="LOG=[];kv(\'put\',\'log\',[]);openSettings()">Clear</button>':''}
-<h3>About</h3><p class="m">Ladder ${APP_V}${c.sv?' · script v'+c.sv+(c.sv<CODE_V?' (update Code.gs)':''):''}</p>
+<h3>About</h3><p class="m">NextRole ${APP_V}${c.sv?' · script v'+c.sv+(c.sv<CODE_V?' (update Code.gs)':''):''}</p>
 <div class="btns" style="margin-top:20px"><button class="btn" style="flex:1" onclick="$('#st').close()">Close</button></div>`;
 if(!d.open){d.showModal();try{history.pushState(null,'','#'+SL[tab])}catch(e){}}d.scrollTop=y}
 async function saveConn(){const u=$('#s_url').value.trim(),t=$('#s_tok').value.trim();if(u&&!okUrl(u))return alert('That link does not look right. It should start with https://script.google.com/macros/s/ and end with /exec');
@@ -454,7 +455,7 @@ async function exp(){const b=new Blob([JSON.stringify({v:1,app:'Ladder',items:D.
 const okx=()=>{D.cfg.lastExport=today();save();toast('Backup file ready')};try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});okx();return}}catch(e){if(e.name==='AbortError')return;logE('export',e)}
 const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=f.name;a.click();okx()}
 async function imp(inp){const f=inp.files[0];if(!f)return;try{const j=JSON.parse(await f.text());let list=j.items;if(!Array.isArray(list)&&j.acca)list=fromV1(j);if(!Array.isArray(list))throw new Error('no records found in the file');
-merge(list);commit();toast('Imported '+list.length+' records')}catch(e){logE('import',e);alert('Could not import that file: '+e.message+'. Pick a Ladder backup (.json) file.')}inp.value=''}
+merge(list);commit();toast('Imported '+list.length+' records')}catch(e){logE('import',e);alert('Could not import that file: '+e.message+'. Pick a NextRole (or older Ladder) backup .json file.')}inp.value=''}
 
 // ---------- start ----------
 addEventListener('popstate',()=>{const d=document.querySelector('dialog[open]');if(d){d.close();return}const h=location.hash.slice(1);
@@ -468,6 +469,6 @@ addEventListener('online',()=>{if(D.cfg.url)sync()});
 load().then(()=>{const h=location.hash.slice(1);if(SL[h])tab=h;render();syIdle();
 if(h==='add-win'||h==='add-learning'){tab='journal';SEG.journal=h==='add-win'?'win':'cpd';render();openE(SEG.journal)}
 if(D.cfg.url)sync()});
-if('serviceWorker'in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').then(r=>{r.onupdatefound=()=>{const w=r.installing;if(w)w.onstatechange=()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)toast('A new version of Ladder is ready',()=>location.reload(),'Reload')}}}).catch(e=>logE('app','Offline support could not start: '+e.message))}
+if('serviceWorker'in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').then(r=>{r.onupdatefound=()=>{const w=r.installing;if(w)w.onstatechange=()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)toast('A new version of NextRole is ready',()=>location.reload(),'Reload')}}}).catch(e=>logE('app','Offline support could not start: '+e.message))}
 </script>
 </body></html>
