@@ -1,11 +1,11 @@
-// Ladder – Google Apps Script backend, version 1.
+// NextRole (formerly Ladder) – Google Apps Script backend, version 1.
 // Sheets sync, Calendar (exam + goal dates), daily Drive backups and an error log.
 //
 // Setup:
 // 1) Make a new Google Sheet > Extensions > Apps Script. Paste this file.
-// 2) Put your own long secret word in TOKEN below (the same one you type in Ladder > Settings).
+// 2) Put your own long secret word in TOKEN below (the same one you type in NextRole > Settings).
 // 3) Choose "authorize" in the toolbar and click Run once.
-// 4) Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Copy the /exec link into Ladder.
+// 4) Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Copy the /exec link into NextRole.
 // After edits: Deploy > Manage deployments > pencil icon > Version: New version > Deploy.
 const TOKEN = 'CHANGE_ME';
 const VERSION = 1;
@@ -97,7 +97,7 @@ function syncCal(ev) {
     const m = map[key];
     if (m && m.d === e.date && m.t === title) return;
     if (m) { try { cal.getEventById(m.id).deleteEvent(); } catch (x) {} }
-    const x = cal.createAllDayEvent(title, new Date(e.date + 'T00:00:00'), { description: 'Added by Ladder' });
+    const x = cal.createAllDayEvent(title, new Date(e.date + 'T00:00:00'), { description: 'Added by NextRole' });
     x.removeAllReminders(); x.addPopupReminder(7 * 24 * 60); x.addPopupReminder(24 * 60);
     map[key] = { id: x.getId(), d: e.date, t: title };
   });
@@ -108,6 +108,7 @@ function syncCal(ev) {
 }
 
 // ---------- Daily backups: Drive / Ladder Backups ----------
+// Folder and file names keep the old "Ladder" name so existing backups still restore.
 function topFolder(name) {
   const it = DriveApp.getFoldersByName(name);
   return it.hasNext() ? it.next() : DriveApp.createFolder(name);
