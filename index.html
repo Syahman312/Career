@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ladder – Career development tracker</title>
+<meta name="description" content="Track goals, ACCA papers, wins, learning hours and build your resume. Works offline on iPhone, Android and PC.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ladder">
+<meta property="og:title" content="Ladder – Career development tracker">
+<meta property="og:description" content="Track goals, ACCA papers, wins, learning hours and build your resume.">
+<link rel="icon" href="icon-192.png" type="image/png">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; worker-src 'self'">
+<script>if(location.protocol==='http:'&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))location.replace('https:'+location.href.slice(5))</script>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ladder">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{color-scheme:dark;--bg:#000;--card:#0b0b0b;--c2:#16171a;--tx:#f0f0f0;--mu:#7d7d7d;--ac:#e8e8e8;--bd:#1c1c1c;--bd2:#24252a;--red:#f87171;--amb:#fbbf24;--grn:#4ade80;--cy:#22e3ff;--vi:#a78bfa}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+.w{max-width:720px;margin:0 auto;padding:0 14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+header{background:#000;border-bottom:1px solid var(--bd);padding:calc(16px + env(safe-area-inset-top)) 0 18px}
+header .w{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+header .w>div:first-child{min-width:0;flex:1 1 auto;display:flex;gap:10px;align-items:center}
+header .w>div:last-child{flex:none;display:flex;flex-direction:column;align-items:flex-end}
+#nm{font:600 18px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sub{color:var(--mu);font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#odo{font:700 clamp(20px,7.2vw,34px)/1 ui-monospace,"SF Mono",Consolas,monospace;white-space:nowrap;color:#f5b83d;letter-spacing:.04em;font-variant-numeric:tabular-nums;text-align:right;cursor:pointer}
+#odo small{display:inline;font-size:13px;margin-left:4px;color:var(--mu);letter-spacing:0}
+.av2{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:20px;font-weight:800;background:linear-gradient(135deg,#0e7490,#1e1b4b);color:#fff;flex:none}
+.hr{display:flex;gap:6px;align-items:center;margin-top:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:99px;background:var(--c2);border:1px solid var(--bd2);font:500 12.5px system-ui,sans-serif;color:#8d8f97;white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:#5c5e66;flex:none}
+.pill.ok .dot{background:var(--grn)}.pill.busy .dot{background:#60a5fa;animation:pulse 1s infinite}.pill.err .dot{background:var(--red)}
+@keyframes pulse{50%{opacity:.3}}
+.ib{width:36px;height:32px;border-radius:99px;display:inline-grid;place-items:center;background:var(--c2);border:1px solid var(--bd2);color:#8d8f97;padding:0;flex:none;cursor:pointer}.ib svg{width:18px;height:18px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin:8px 0}.cl{cursor:pointer}.cl:active{opacity:.65}
+.r{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.m{color:var(--mu);font-size:13px}.mt{margin-top:10px}
+.ct{font-size:16px;font-weight:700;margin:0 0 4px}
+.tag{font-size:12px;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.s0{color:var(--grn)}.s1{color:var(--amb)}.s2{color:var(--red)}.s3{color:var(--cy)}.s4{color:var(--mu)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{background:var(--ac);color:var(--bg);border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+button:active{transform:scale(.97)}
+button.g{background:transparent;color:var(--ac);border:1px solid var(--bd)}
+button.d{background:var(--red);color:#000}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);margin:4px 0 12px}
+input[type=range]{padding:0;accent-color:var(--cy);border:0}
+label{font-size:13px;color:var(--mu)}
+.row{display:flex;gap:8px;align-items:flex-start}.row>*{flex:1}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:4;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;color:var(--mu);border-radius:0;padding:15px 0;font-size:13px}
+nav button.on{color:var(--ac);box-shadow:inset 0 3px var(--ac)}
+#fab{position:fixed;right:16px;bottom:calc(70px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;font-size:30px;line-height:1;padding:0;box-shadow:0 6px 20px #000c;z-index:5;transition:transform .2s}
+#fab.open{transform:rotate(45deg)}
+#fm{position:fixed;right:16px;bottom:calc(138px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:5}
+#fm button{border-radius:99px;padding:11px 18px;box-shadow:0 4px 16px #000c;animation:up .18s ease-out}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom));background:#1a1a1a;border:1px solid #333;color:var(--tx);padding:8px 8px 8px 16px;border-radius:99px;display:flex;gap:12px;align-items:center;z-index:6;font-size:14px;white-space:nowrap;box-shadow:0 6px 20px #000c}
+#toast button{padding:6px 14px}
+dialog{border:1px solid var(--bd);border-radius:16px;background:#0b0b0c;color:var(--tx);width:min(460px,92vw);max-height:92vh;padding:18px}
+dialog::backdrop{background:#000c}
+dialog h2{margin:0 0 12px;font-size:18px}
+dialog[open]{animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+@media (max-width:759px){dialog{margin:auto 0 0;width:100%;max-width:100%;border-radius:22px 22px 0 0;max-height:92dvh;border-width:1px 0 0;padding:8px 16px calc(18px + env(safe-area-inset-bottom))}
+dialog::before{content:"";display:block;width:40px;height:5px;border-radius:9px;background:var(--bd2);margin:0 auto 12px}dialog[open]{animation:sheetUp .28s cubic-bezier(.2,.8,.2,1)}}
+@keyframes sheetUp{from{transform:translateY(100%)}}
+@media (min-width:760px){#st{width:min(640px,96vw)}}
+#st h3{margin:22px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mu)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;background:var(--c2);border:1px solid var(--bd2);color:var(--tx);font-weight:600}
+.btn.pri{background:var(--cy);color:#000;border-color:transparent}.btn.sm{min-height:36px;padding:0 12px;font-size:13.5px;border-radius:10px}.btn:disabled{opacity:.45}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+label.f{display:block;margin:12px 0 0}label.f>span{display:block;font-size:12.5px;color:var(--mu);margin-bottom:5px;font-weight:600}label.f input,label.f select,label.f textarea{margin:0}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;font-size:15px;color:var(--tx)}
+.switch input{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:99px;background:var(--bd2);position:relative;padding:0;margin:0;flex:none;transition:.2s;border:0;cursor:pointer}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.switch input:checked{background:var(--cy)}.switch input:checked::after{left:23px}
+.logline{font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;border-bottom:1px solid var(--bd2);padding:6px 0;overflow-wrap:anywhere}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.kpi{background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:10px 12px;min-width:0}
+.kpi b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kpi span{font-size:11.5px;color:var(--mu)}
+.seg{display:flex;gap:6px;margin:12px 0 8px;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}
+.seg button{min-height:36px;padding:0 14px;border-radius:99px;background:var(--c2);border:1px solid var(--bd2);font-size:14px;color:var(--mu);font-weight:500;white-space:nowrap}
+.seg button.on{background:var(--ac);color:#000;border-color:transparent;font-weight:650}
+.sh{display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 4px;font-size:13px;font-weight:700;color:var(--mu)}
+.bar{height:8px;background:#1c1c1c;border-radius:4px;overflow:hidden;margin:8px 0 4px}.bar i{display:block;height:100%;border-radius:4px;background:var(--cy);transition:width .6s ease-out}
+.hero{display:flex;gap:14px;align-items:center}
+.rn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.rn b{font-size:22px;line-height:1}.rn span{font-size:10px;color:var(--mu)}
+.ring{animation:rg 1.1s ease-out}@keyframes rg{from{stroke-dashoffset:var(--c)}}
+.chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.chip2{font-size:13px;padding:5px 11px;border:1px solid var(--bd);border-radius:99px;background:var(--bg)}
+.ins{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 14px;margin:8px -14px;padding:0 14px 4px;scrollbar-width:none}.ins::-webkit-scrollbar{display:none}
+.ins .c{flex:0 0 62%;max-width:230px;scroll-snap-align:start;margin:0}.ins b{font-size:20px;display:block;margin:4px 0 2px}
+.glow{box-shadow:0 0 0 1px rgba(34,227,255,.22),0 0 26px rgba(34,227,255,.07)}
+.hi{font-size:15px;margin:14px 2px 0;color:var(--mu)}.hi b{color:var(--tx)}
+.sbar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:#1c1c1c;margin:10px 0}.sbar i{display:block;height:100%}
+.tl{position:relative;padding-left:48px;margin-top:12px}
+.tl:before{content:"";position:absolute;left:19px;top:0;bottom:0;width:8px;background:#151515;border:1px solid #262626;border-width:0 1px}
+.tl:after{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:repeating-linear-gradient(#777 0 8px,transparent 8px 16px)}
+.mh{background:#141414;border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin:16px 0 4px;letter-spacing:.06em}
+.ti{position:relative;padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer}.ti:active{opacity:.65}
+.ic{position:absolute;left:-43px;top:12px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:#2b2b2b;z-index:1}
+.ic.w{background:#f59e0b}
+.pc{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer}.pc:last-child{border-bottom:0}.pc:active{opacity:.65}
+.code{width:52px;flex:none;text-align:center;font:700 13px ui-monospace,Consolas,monospace;padding:6px 0;border-radius:10px;background:var(--c2);border:1px solid var(--bd2)}
+.code.s0{border-color:var(--grn)}.code.s1{border-color:var(--amb)}.code.s2{border-color:var(--red)}.code.s3{border-color:var(--cy)}
+.dots{display:flex;gap:6px;margin-top:8px}.dots button{width:30px;height:30px;border-radius:50%;padding:0;background:var(--c2);border:1px solid var(--bd2)}
+.dots button.on{background:var(--cy);border-color:var(--cy)}.dots button.tg{outline:2px solid var(--amb);outline-offset:2px}
+.fr{display:flex;gap:6px;overflow-x:auto;margin:10px -14px 4px;padding:0 14px;scrollbar-width:none}.fr::-webkit-scrollbar{display:none}
+.fr .chip2{white-space:nowrap;cursor:pointer}.fr .chip2.on{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.cf{position:fixed;inset:0;pointer-events:none;z-index:9;overflow:hidden}.cf i{position:absolute;top:-14px;width:8px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+#v.an>*{animation:fi .25s ease-out both}@keyframes fi{from{opacity:0;transform:translateY(6px)}}
+#rv{font-size:22px;font-weight:700;color:var(--cy);text-align:center}
+.paper{background:#fff;color:#1d1f2e;border-radius:14px;padding:24px;margin:10px 0;font-size:14px}
+#cv h1{margin:0;font-size:24px}#cv .cvc{color:#555;font-size:13px;margin-bottom:6px;overflow-wrap:anywhere}
+#cv h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#0e7490;border-bottom:1px solid #ddd;padding-bottom:3px;margin:16px 0 8px}
+#cv p{margin:0}#cv ul{margin:4px 0 0;padding-left:18px}#cv .cvi{margin-bottom:10px}
+#cv .cvr{display:flex;justify-content:space-between;gap:8px}#cv .cvr span,#cv .cvs{color:#555;font-size:13px}
+[hidden]{display:none!important}
+@media (max-width:359px){nav button{font-size:11px}.kpis{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff;padding:0}header,nav,#fab,#fm,#toast,.np{display:none!important}main.w{max-width:none;padding:0}#v>*:not(#cvp){display:none!important}#cvp{margin:0;padding:0;border-radius:0}#v.an>*{animation:none}}
+</style></head><body>
+<header><h1 class="sr">Ladder – career development tracker</h1><div class="w"><div><div class="av2" id="av" aria-hidden="true">L</div><div style="min-width:0"><div id="nm">Ladder</div><small id="sub"></small></div></div>
+<div><div id="odo" role="button" tabindex="0" title="ACCA progress" onclick="go('acca')"></div><div class="hr"><button class="ib" type="button" aria-label="Settings" onclick="openSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><button class="pill" id="sy" type="button" title="Sync status. Tap for settings" onclick="openSettings()"><span class="dot" aria-hidden="true"></span><span class="sr">Sync status: </span><span id="syt">Local only</span></button></div></div></div></header>
+<main class="w"><div id="v"></div></main>
+<div id="fm" hidden><button onclick="fab(0);openE('win')">🏆 Win</button><button onclick="fab(0);openE('cpd')">📚 Learning</button><button onclick="fab(0);openE('goal')">🎯 Goal</button></div>
+<button id="fab" aria-label="Add" onclick="fab()">+</button><div id="toast" hidden></div>
+<nav aria-label="Sections"><button data-t="home" onclick="go('home')">Home</button><button data-t="goals" onclick="go('goals')">Goals</button><button data-t="acca" onclick="go('acca')">ACCA</button><button data-t="journal" onclick="go('journal')">Journal</button><button data-t="profile" onclick="go('profile')">Profile</button></nav>
+<dialog id="ed"><form id="ef"><h2 id="et"></h2><div id="eb"></div>
+<div class="row mt"><button type="button" class="g" onclick="$('#ed').close()">Cancel</button><button type="button" class="d" id="ex" onclick="delE()">Delete</button><button>Save</button></div></form></dialog>
+<dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
+<input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
+<script>
+const APP_V='2026.11.17a',CODE_V=1;
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
+let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
+const PAPERS=[['BT','Business & Technology','Applied Knowledge'],['MA','Management Accounting','Applied Knowledge'],['FA','Financial Accounting','Applied Knowledge'],
+['LW','Corporate & Business Law','Applied Skills'],['PM','Performance Management','Applied Skills'],['TX','Taxation','Applied Skills'],['FR','Financial Reporting','Applied Skills'],['AA','Audit & Assurance','Applied Skills'],['FM','Financial Management','Applied Skills'],
+['SBL','Strategic Business Leader','Strategic Professional'],['SBR','Strategic Business Reporting','Strategic Professional'],
+['AFM','Advanced Financial Management','Options – pick 2'],['APM','Advanced Performance Management','Options – pick 2'],['ATX','Advanced Taxation','Options – pick 2'],['AAA','Advanced Audit & Assurance','Options – pick 2']];
+const ST=['Not started','Exempt','Studying','Booked','Passed','Failed'],AREAS=['Work','ACCA','Skill','Network','Personal'],CPDT=['Course','Webinar','Book','On-the-job','Mentoring','Conference'];
+const stc=s=>({Passed:'s0',Exempt:'s0',Booked:'s1',Studying:'s3',Failed:'s2'}[s]||'s4');
+
+// ---------- storage (IndexedDB) ----------
+const P=new Promise((r,j)=>{const q=indexedDB.open('ladder',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
+const kv=(m,k,v)=>P.then(d=>new Promise((r,j)=>{const s=d.transaction('k',m==='get'?'readonly':'readwrite').objectStore('k'),q=m==='get'?s.get(k):s.put(v,k);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)}));
+const save=()=>{VER++;return kv('put','d',D).catch(e=>{logE('storage',e);toast('Could not save on this device. Storage may be full.')})};
+const logE=(a,m)=>{const x={t:Date.now(),a:String(a),m:String((m&&m.message)||m||'').replace(/token[^,;]*/gi,'token …').slice(0,300)};LOG.unshift(x);if(LOG.length>100)LOG.length=100;kv('put','log',LOG).catch(()=>{})};
+addEventListener('error',e=>logE('app',(e.message||'Error')+(e.lineno?' (line '+e.lineno+')':'')));addEventListener('unhandledrejection',e=>logE('app',e.reason));
+
+// ---------- helpers ----------
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+live=k=>D.items.filter(i=>i.kind===k&&!i.deleted),
+get=id=>D.items.find(i=>i.id===id),
+me=()=>get('me')||{},
+today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)},
+fd=s=>s?new Date(s+'T00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'',
+sd=s=>s?new Date(s+'T00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'',
+mon=s=>s?new Date(s+'-01T00:00').toLocaleDateString('en-GB',{month:'short',year:'numeric'}):'',
+dd=s=>Math.round((new Date(s+'T00:00')-new Date(today()+'T00:00'))/864e5),
+inD=n=>n<0?Math.abs(n)+' day'+(n===-1?'':'s')+' ago':n===0?'today':n===1?'tomorrow':'in '+n+' days',
+sum=(a,k)=>a.reduce((s,i)=>s+(+i[k]||0),0),
+num=n=>(+n||0).toLocaleString('en-MY',{maximumFractionDigits:1}),
+ago=t=>{const s=(Date.now()-t)/1e3;return s<60?'just now':s<3600?Math.round(s/60)+' min ago':s<86400?Math.round(s/3600)+' h ago':Math.round(s/86400)+' days ago'},
+safe=f=>{try{return f()}catch(e){logE('render',e);return '<p class="m">Something went wrong showing this part.</p>'}},
+byDue=(a,b)=>(a.due||'9').localeCompare(b.due||'9'),
+pOrd=c=>PAPERS.findIndex(p=>p[0]===c);
+function accaPct(){const A=live('acca'),ok=a=>['Passed','Exempt'].includes(a.st),req=A.filter(a=>!a.l.startsWith('Options')),opt=A.filter(a=>a.l.startsWith('Options')&&ok(a)).length;
+const done=req.filter(ok).length+Math.min(2,opt);return{done,total:13,pct:done/13*100}}
+const nextExam=()=>live('acca').filter(x=>x.st==='Booked'&&x.date&&dd(x.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
+function ring(p,big,small,sz=116,col='var(--cy)'){const r=50,c=2*Math.PI*r;return `<div style="position:relative;width:${sz}px;height:${sz}px;flex:none"><svg viewBox="0 0 120 120" width="${sz}" height="${sz}" aria-hidden="true"><circle cx="60" cy="60" r="${r}" fill="none" stroke="#1c1c1c" stroke-width="10"/><circle class="ring" style="--c:${c}" cx="60" cy="60" r="${r}" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.min(100,p)/100)}" transform="rotate(-90 60 60)"/></svg><div class="rn"><b>${big}</b><span>${small}</span></div></div>`}
+const kpis=a=>'<div class="kpis">'+a.map(([l,v,c])=>`<div class="kpi"><span>${l}</span><b${c?` class="${c}"`:''}>${v}</b></div>`).join('')+'</div>';
+const sh=(l,r)=>`<div class="sh"><span>${l}</span><span>${r??''}</span></div>`;
+function buzz(n){try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}}
+function confetti(){const d=document.createElement('div');d.className='cf';d.innerHTML=Array.from({length:60},()=>`<i style="left:${Math.random()*100}%;background:${['#22e3ff','#fbbf24','#4ade80','#a78bfa','#f87171'][Math.floor(Math.random()*5)]};animation-duration:${1.6+Math.random()*1.6}s;animation-delay:${Math.random()*.4}s"></i>`).join('');document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}
+
+// ---------- data cleaning (also used for synced data) ----------
+const KINDS=['me','goal','acca','skill','win','cpd','job','edu'],NUMF=['pct','score','lvl','tgt','hrs','updated','deleted','ver','cvw','cvl'],DATEF=['due','date'],MONF=['start','end'],
+STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,summary:1000};
+function clean(i){if(!i||typeof i!=='object'||Array.isArray(i))return null;if(typeof i.id!=='string'||!/^[\w.:-]{1,80}$/.test(i.id))return null;if(!KINDS.includes(i.kind))return null;const o={};
+for(const k of Object.keys(i)){const v=i[k];
+if(NUMF.includes(k)){if(v==='')o[k]='';else if(v!=null){const n=+v;if(isFinite(n))o[k]=n}}
+else if(DATEF.includes(k))o[k]=typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)?v:'';
+else if(MONF.includes(k))o[k]=typeof v==='string'&&/^\d{4}-\d{2}$/.test(v)?v:'';
+else if(k==='id')o.id=v;
+else if(k in STRF){if(v!=null)o[k]=String(v).slice(0,STRF[k])}}
+o.updated=+o.updated||0;return o}
+
+// ---------- first run / old version import ----------
+function ensure(){const has=new Set(D.items.map(i=>i.id));
+PAPERS.forEach(([c,n,l])=>{if(!has.has('acca-'+c))D.items.push({id:'acca-'+c,kind:'acca',c,n,l,st:'Not started',date:'',score:'',updated:1})});
+if(!has.has('me'))D.items.push({id:'me',kind:'me',name:'',email:'',phone:'',loc:'Malaysia',link:'',summary:'Group consolidation professional in healthcare, pursuing ACCA.',role:'Executive, Group Consolidation',target:'Assistant Manager, Group Reporting',cvw:1,cvl:0,updated:1})}
+function starter(){const n=Date.now();
+[['Group consolidation (IFRS 10)',3,5],['Intercompany eliminations',3,5],['Excel / Power Query',3,4],['Power BI',1,4],['Stakeholder communication',3,4],['MFRS / IFRS reporting',3,5]].forEach(([name,lvl,tgt],k)=>D.items.push({id:'sk-'+k,kind:'skill',name,lvl,tgt,updated:1}));
+D.items.push({id:'g-start1',kind:'goal',title:'Cut consolidation close to 5 working days',area:'Work',due:'2027-06-30',pct:30,next:'Map intercompany recon steps',updated:1},
+{id:'g-start2',kind:'goal',title:'Pass SBR',area:'ACCA',due:'2027-03-31',pct:10,next:'Finish IFRS 10/3 chapters',updated:1},
+{id:'job-start',kind:'job',co:'KPJ Healthcare',title:'Executive, Group Consolidation',loc:'Malaysia',start:'',end:'',pts:'Prepare monthly group consolidation and intercompany eliminations\nSupport group financial reporting under MFRS',updated:1})}
+function fromV1(S){const n=Date.now(),o=[],id=(p,x)=>p+'-'+String(x||uid()).replace(/[^\w.:-]/g,'');
+const m=S.me||{};o.push({id:'me',kind:'me',name:m.name||'',email:m.email||'',phone:m.phone||'',loc:m.loc||'',link:m.link||'',summary:m.summary||'',role:S.role||'',target:S.target||'',cvw:S.cv&&S.cv.wins===false?0:1,cvl:S.cv&&S.cv.learn?1:0,updated:n});
+(S.goals||[]).forEach(g=>o.push({id:id('g',g.id),kind:'goal',title:g.title,area:g.area,due:g.due,pct:+g.pct||0,next:g.next,updated:n}));
+(S.acca||[]).forEach(a=>{const P0=PAPERS.find(p=>p[0]===a.c);if(P0)o.push({id:'acca-'+a.c,kind:'acca',c:a.c,n:P0[1],l:P0[2],st:a.st||'Not started',date:a.date||'',score:a.score===''?'':+a.score,updated:n})});
+(S.skills||[]).forEach(s=>o.push({id:id('sk',s.id),kind:'skill',name:s.n,lvl:+s.l||1,tgt:+s.t||4,updated:n}));
+(S.wins||[]).forEach(w=>o.push({id:id('w',w.id),kind:'win',date:w.date,title:w.t,impact:w.i,updated:n}));
+(S.cpd||[]).forEach(c=>o.push({id:id('c',c.id),kind:'cpd',date:c.date,title:c.t,type:c.k,hrs:+c.hrs||0,updated:n}));
+(S.jobs||[]).forEach(j=>o.push({id:id('job',j.id),kind:'job',co:j.co,title:j.title,loc:j.loc,start:j.start,end:j.end,pts:j.pts,updated:n}));
+(S.edu||[]).forEach(e=>o.push({id:id('edu',e.id),kind:'edu',inst:e.i,qual:e.q,grade:e.g,start:e.start,end:e.end,updated:n}));
+return o.map(clean).filter(Boolean)}
+async function load(){try{const v=await kv('get','d');if(v){D.items=(v.items||[]).map(clean).filter(Boolean);D.cfg={...D.cfg,...v.cfg}}LOG=(await kv('get','log'))||[]}catch(e){logE('storage',e)}
+if(!D.items.length){let old=null;try{old=JSON.parse(localStorage.getItem('ladder_v1'))}catch(e){}
+if(old&&old.acca){D.items=fromV1(old);D.cfg.v1=1;setTimeout(()=>toast('Brought over your data from the old Ladder'),600)}else starter()}
+ensure();VER++;save()}
+
+// ---------- render ----------
+function render(){const m=me(),a=accaPct();
+$('#nm').textContent=m.name||'Ladder';$('#av').textContent=(m.name||'L').trim().charAt(0).toUpperCase()||'L';
+$('#sub').textContent=m.target?'Next: '+m.target:m.role||'Set your role in Profile';
+$('#odo').innerHTML=a.done+'/13<small>ACCA</small>';
+document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+$('#fab').hidden=tab==='profile'&&SEG.profile==='cv';
+$('#v').innerHTML=safe({home,goals:goalsTab,acca:accaTab,journal,profile}[tab]||home)}
+function go(t,np){if(!SL[t])t='home';if(!np&&location.hash!=='#'+SL[t])try{history.pushState(null,'','#'+SL[t])}catch(e){}tab=t;fab(0);render();const v=$('#v');v.classList.remove('an');void v.offsetWidth;v.classList.add('an');setTimeout(()=>v.classList.remove('an'),350);scrollTo(0,0)}
+function setSeg(k,v){SEG[k]=v;render()}
+function fab(o){const f=$('#fab'),m=$('#fm'),on=o===undefined?m.hidden:!!o;m.hidden=!on;f.classList.toggle('open',on)}
+
+function home(){const m=me(),a=accaPct(),G=live('goal'),og=G.filter(g=>+g.pct<100),gp=G.length?sum(G,'pct')/G.length:0,y=String(new Date().getFullYear()),
+C=live('cpd').filter(c=>(c.date||'').startsWith(y)),hrs=sum(C,'hrs'),W=live('win'),wy=W.filter(w=>(w.date||'').startsWith(y)).length,ne=nextExam(),
+S=live('skill'),atT=S.filter(s=>+s.lvl>=+s.tgt).length,gap=S.filter(s=>+s.tgt>+s.lvl).sort((x,z)=>(z.tgt-z.lvl)-(x.tgt-x.lvl)).slice(0,3),
+passed=live('acca').filter(p=>['Passed','Exempt'].includes(p.st)).sort((x,z)=>pOrd(x.c)-pOrd(z.c)),h=new Date().getHours(),
+up=[...og.filter(g=>g.due&&dd(g.due)<=60).map(g=>({d:g.due,t:g.title,s:g.area,id:g.id,k:'goal'})),...live('acca').filter(p=>p.st==='Booked'&&p.date&&dd(p.date)>=0).map(p=>({d:p.date,t:p.c+' exam',s:p.n,id:p.id,k:'acca'}))].sort((x,z)=>x.d.localeCompare(z.d)).slice(0,5),
+lastWin=W.map(w=>w.date).sort().pop(),nudge=!lastWin||dd(lastWin)<-14;
+return `<p class="hi">${h<12?'Good morning':h<18?'Good afternoon':'Good evening'}${m.name?', <b>'+E(m.name.split(' ')[0])+'</b>':''}.</p>
+<div class="c glow mt"><div class="hero">${ring(a.pct,Math.round(a.pct)+'%','ACCA')}<div style="min-width:0"><div class="m">Now</div><b>${E(m.role||'—')}</b><div class="m mt">Next role</div><b>${E(m.target||'—')}</b></div></div>
+${passed.length?`<div class="chips">${passed.map(p=>`<span class="chip2 s0">✓ ${E(p.c)}</span>`).join('')}</div>`:''}</div>
+${kpis([['Goals',Math.round(gp)+'%'],['Next exam',ne?E(ne.c)+' · '+dd(ne.date)+'d':'—',ne&&dd(ne.date)<=30?'s1':''],['Learning '+y,num(hrs)+' h']])}
+${nudge?`<div class="c cl" style="border-color:var(--amb)" onclick="openE('win')"><b>🏆 ${lastWin?'No wins logged for '+Math.abs(dd(lastWin))+' days':'Log your first win'}</b><div class="m">Small things count. Note the impact while it is fresh. It feeds your appraisal and resume.</div></div>`:''}
+<div class="ins"><div class="c"><span class="m">Wins this year</span><b>${wy}</b><span class="m">${W.length} all time</span></div><div class="c"><span class="m">Open goals</span><b>${og.length}</b><span class="m">${G.length-og.length} done</span></div><div class="c"><span class="m">Skills at target</span><b>${atT}/${S.length}</b><span class="m">Profile › Skills</span></div></div>
+${up.length?sh('Coming up')+'<div class="c">'+up.map(u=>{const n=dd(u.d);return `<div class="pc" onclick="openE('${u.k}','${E(u.id)}')"><div style="flex:1;min-width:0"><b>${E(u.t)}</b><div class="m">${E(u.s||'')} · ${fd(u.d)}</div></div><span class="tag ${n<0?'s2':n<=14?'s1':'s3'}">${inD(n)}</span></div>`}).join('')+'</div>':''}
+${sh('Next actions')}${og.filter(g=>g.next).length?'<div class="c">'+og.filter(g=>g.next).sort(byDue).map(g=>`<div class="pc" onclick="openE('goal','${E(g.id)}')"><span class="tag s3">${E(g.area||'Goal')}</span><div style="flex:1;min-width:0">${E(g.next)}<div class="m">${E(g.title)}</div></div></div>`).join('')+'</div>':'<p class="m">No open actions. Add a next step to a goal.</p>'}
+${sh('Biggest skill gaps')}${gap.length?'<div class="c">'+gap.map(s=>`<div class="pc" onclick="SEG.profile='skills';go('profile')"><div style="flex:1;min-width:0">${E(s.name)}<div class="bar"><i style="width:${s.lvl/5*100}%"></i></div></div><span class="tag s1">${s.lvl} → ${s.tgt}</span></div>`).join('')+'</div>':'<p class="m">No gaps. 🎉</p>'}`}
+
+function goalCard(g){const n=g.due?dd(g.due):null,d=+g.pct>=100;return `<div class="c cl" onclick="openE('goal','${E(g.id)}')"><div class="r"><b>${E(g.title)}</b><b class="${d?'s0':''}">${g.pct||0}%</b></div><div class="bar"><i style="width:${Math.min(100,g.pct||0)}%;${d?'background:var(--grn)':''}"></i></div>
+<div class="r"><span class="m">${E(g.area||'')}${g.next&&!d?' · Next: '+E(g.next):''}</span>${g.due&&!d?`<span class="tag ${n<0?'s2':n<=30?'s1':'s4'}">${n<0?'Overdue':sd(g.due)}</span>`:''}</div>
+${d?'':`<div class="btns mt"><button class="btn sm" onclick="event.stopPropagation();bump('${E(g.id)}',10)">+10%</button><button class="btn sm" onclick="event.stopPropagation();bump('${E(g.id)}',100)">✓ Done</button></div>`}</div>`}
+function bump(id,v){const g=get(id);if(!g)return;const was=+g.pct||0;g.pct=v>=100?100:Math.min(100,was+v);g.updated=Date.now();commit();if(g.pct>=100&&was<100){confetti();buzz([10,40,10]);toast('Goal done! 🎉',()=>{g.pct=was;g.updated=Date.now();commit()})}}
+function goalsTab(){const G=live('goal'),F=G.filter(g=>GF==='All'||g.area===GF),o=F.filter(g=>+g.pct<100).sort(byDue),d=F.filter(g=>+g.pct>=100);
+return kpis([['Open',G.filter(g=>+g.pct<100).length],['Done',G.filter(g=>+g.pct>=100).length,'s0'],['Overdue',G.filter(g=>+g.pct<100&&g.due&&dd(g.due)<0).length,'s2']])+
+`<div class="fr">${['All',...AREAS].map(a=>`<span class="chip2${a===GF?' on':''}" onclick="GF='${a}';render()">${a}</span>`).join('')}</div>`+
+sh('In progress',o.length)+(o.length?o.map(goalCard).join(''):'<p class="m">No open goals here. Tap + to add one.</p>')+(d.length?sh('Done',d.length)+d.map(goalCard).join(''):'')}
+
+function accaTab(){const A=live('acca').sort((x,z)=>pOrd(x.c)-pOrd(z.c)),a=accaPct(),sat=A.filter(p=>['Passed','Failed'].includes(p.st)),pass=sat.filter(p=>p.st==='Passed'),sc=pass.filter(p=>p.score!==''&&p.score!=null&&+p.score>0),ne=nextExam();
+const lv=[...new Set(PAPERS.map(p=>p[2]))];
+return `<div class="c glow mt"><div class="hero">${ring(a.pct,a.done+'/13','papers')}<div style="min-width:0"><b style="font-size:18px">${a.done===13?'ACCA complete! 🎓':(13-a.done)+' paper'+(13-a.done===1?'':'s')+' to go'}</b>
+<div class="m mt">${ne?'Next: <b style="color:var(--tx)">'+E(ne.c)+'</b> on '+fd(ne.date)+' ('+inD(dd(ne.date))+')':'No exam booked. Tap a paper to set the date.'}</div></div></div>
+<div class="sbar">${lv.map((l,k)=>{const P0=A.filter(p=>p.l===l),need=l.startsWith('Options')?2:P0.length,dn=Math.min(need,P0.filter(p=>['Passed','Exempt'].includes(p.st)).length);return `<i style="width:${dn/13*100}%;background:${['#22e3ff','#4ade80','#fbbf24','#a78bfa'][k]}"></i>`}).join('')}</div>
+<div class="m">${lv.map((l,k)=>`<span style="color:${['#22e3ff','#4ade80','#fbbf24','#a78bfa'][k]}">■</span> ${l.replace(' – pick 2','')}`).join(' &nbsp; ')}</div></div>
+${kpis([['Passed',pass.length,'s0'],['Pass rate',sat.length?Math.round(pass.length/sat.length*100)+'%':'—'],['Avg score',sc.length?Math.round(sum(sc,'score')/sc.length):'—']])}
+${lv.map(l=>{const P0=A.filter(p=>p.l===l),need=l.startsWith('Options')?2:P0.length,dn=Math.min(need,P0.filter(p=>['Passed','Exempt'].includes(p.st)).length);
+return sh(l,dn+'/'+need)+'<div class="c">'+P0.map(p=>{const n=p.date?dd(p.date):null;return `<div class="pc" onclick="openE('acca','${E(p.id)}')"><span class="code ${stc(p.st)}">${E(p.c)}</span><div style="flex:1;min-width:0"><div>${E(p.n)}</div><div class="m">${p.st==='Booked'&&p.date?fd(p.date)+' · '+inD(n):p.date?fd(p.date):''}${p.score!==''&&p.score!=null&&+p.score>0?' · '+p.score+' marks':''}</div></div><span class="tag ${stc(p.st)}">${E(p.st)}</span></div>`}).join('')+'</div>'}).join('')}
+<p class="m mt">Pass mark is 50. You need 13 papers: 9 Applied, 2 Strategic and 2 of the 4 options.</p>`}
+
+function tline(a,row,head){const g={};a.forEach(i=>{const k=(i.date||'').slice(0,7)||'—';(g[k]=g[k]||[]).push(i)});
+return '<div class="tl">'+Object.keys(g).sort().reverse().map(k=>`<div class="mh"><div class="r"><span class="m">${k==='—'?'NO DATE':new Date(k+'-01T00:00').toLocaleString('en-GB',{month:'long',year:'numeric'}).toUpperCase()}</span><b>${head(g[k])}</b></div></div>`+g[k].map(row).join('')).join('')+'</div>'}
+const cico=t=>({Course:'🎓',Webinar:'💻',Book:'📖','On-the-job':'🛠️',Mentoring:'🤝',Conference:'🎤'}[t]||'📚');
+function journal(){const s=SEG.journal,y=String(new Date().getFullYear()),srt=a=>a.sort((x,z)=>(z.date||'').localeCompare(x.date||''));
+let h=`<div class="seg"><button class="${s==='win'?'on':''}" onclick="setSeg('journal','win')">🏆 Wins</button><button class="${s==='cpd'?'on':''}" onclick="setSeg('journal','cpd')">📚 Learning</button></div>`;
+if(s==='win'){const W=srt(live('win')),mo=today().slice(0,7);
+h+=kpis([['This month',W.filter(w=>(w.date||'').startsWith(mo)).length],['This year',W.filter(w=>(w.date||'').startsWith(y)).length],['All time',W.length]])+
+'<p class="m">For appraisals and your resume. Say what changed: time saved, RM, accuracy, people helped.</p>'+
+(W.length?tline(W,w=>`<div class="ti" onclick="openE('win','${E(w.id)}')"><span class="ic w">🏆</span><div class="r"><b>${E(w.title)}</b><span class="m">${sd(w.date)}</span></div>${w.impact?`<div class="m">${E(w.impact)}</div>`:''}</div>`,a=>a.length+' win'+(a.length>1?'s':'')):'<p class="m mt">No wins yet. Tap + to log one this week.</p>')}
+else{const C=srt(live('cpd')),CY=C.filter(c=>(c.date||'').startsWith(y)),hy=sum(CY,'hrs'),vy=sum(CY.filter(c=>c.ver),'hrs'),tg=+D.cfg.cpdT||40;
+h+=`<div class="c glow mt"><div class="r"><b>${y} learning</b><b>${num(hy)} / ${tg} h</b></div><div class="bar"><i style="width:${Math.min(100,hy/tg*100)}%;${hy>=tg?'background:var(--grn)':''}"></i></div><div class="m">${num(vy)} h verifiable · ${hy>=tg?'Target met 🎉':num(tg-hy)+' h to go'} · change target in Settings</div></div>`+
+kpis([['Entries',CY.length],['This month',num(sum(C.filter(c=>(c.date||'').startsWith(today().slice(0,7))),'hrs'))+' h'],['All time',num(sum(C,'hrs'))+' h']])+
+(C.length?tline(C,c=>`<div class="ti" onclick="openE('cpd','${E(c.id)}')"><span class="ic">${cico(c.type)}</span><div class="r"><b>${E(c.title)}</b><b>${num(c.hrs)} h</b></div><div class="r"><span class="m">${E(c.type||'')}${c.ver?' · <span class="s0">Verifiable</span>':''}</span><span class="m">${sd(c.date)}</span></div></div>`,a=>num(sum(a,'hrs'))+' h'):'<p class="m mt">Nothing logged yet. Tap + to add a course, book or webinar.</p>')}
+return h}
+
+function profile(){const s=SEG.profile,T=[['cv','📄 Resume'],['jobs','💼 Jobs'],['edu','🎓 Education'],['skills','⭐ Skills']];
+let h=`<div class="seg np">${T.map(([k,l])=>`<button class="${s===k?'on':''}" onclick="setSeg('profile','${k}')">${l}</button>`).join('')}</div>`;
+if(s==='cv'){const m=me();h+=`<div class="c np"><div class="btns"><button class="btn sm" onclick="openE('me','me')">✏️ Edit details</button><button class="btn sm pri" onclick="printCV()">🖨 Print / PDF</button><button class="btn sm" onclick="copyCV()">📋 Copy text</button></div>
+<label class="switch"><span>Include wins</span><input type="checkbox" ${m.cvw?'checked':''} onchange="setMe('cvw',this.checked?1:0)"></label><label class="switch"><span>Include training</span><input type="checkbox" ${m.cvl?'checked':''} onchange="setMe('cvl',this.checked?1:0)"></label>
+<p class="m" style="margin:0">Built from your Jobs, Education, ACCA, Skills (level 3+) and latest 5 wins.</p></div><div class="paper" id="cvp">${cvHTML()}</div>`}
+else if(s==='jobs'){const J=live('job').sort((a,b)=>(b.start||'').localeCompare(a.start||''));h+=`<button onclick="openE('job')" style="width:100%">+ Add job</button>`+(J.length?J.map(j=>`<div class="c cl" onclick="openE('job','${E(j.id)}')"><div class="r"><b>${E(j.title||'Untitled role')}</b>${j.end?'':'<span class="tag s3">Current</span>'}</div><div class="m">${E(j.co)}${j.loc?' · '+E(j.loc):''} · ${mon(j.start)||'?'} – ${mon(j.end)||'Present'}</div>${j.pts?`<div class="m mt">${j.pts.split('\n').filter(Boolean).length} key points</div>`:''}</div>`).join(''):'<p class="m mt">No jobs yet.</p>')}
+else if(s==='edu'){const Q=live('edu').sort((a,b)=>(b.end||'9').localeCompare(a.end||'9'));h+=`<button onclick="openE('edu')" style="width:100%">+ Add education</button>`+(Q.length?Q.map(e=>`<div class="c cl" onclick="openE('edu','${E(e.id)}')"><b>${E(e.qual||e.inst)}</b><div class="m">${E(e.inst)} · ${mon(e.start)||'?'} – ${mon(e.end)||'Present'}${e.grade?' · '+E(e.grade):''}</div></div>`).join(''):'<p class="m mt">No education yet.</p>')+'<p class="m">ACCA goes on your resume by itself from the ACCA tab.</p>'}
+else{const S=live('skill').sort((a,b)=>(b.tgt-b.lvl)-(a.tgt-a.lvl));h+=`<button onclick="openE('skill')" style="width:100%">+ Add skill</button><p class="m">Tap a dot to set your level (1 beginner → 5 expert). Amber ring = target.</p>`+
+S.map(k=>`<div class="c"><div class="r cl" onclick="openE('skill','${E(k.id)}')"><b>${E(k.name)}</b><span class="tag ${+k.lvl>=+k.tgt?'s0':'s1'}">${k.lvl} / ${k.tgt}</span></div><div class="dots">${[1,2,3,4,5].map(n=>`<button aria-label="Level ${n}" class="${n<=k.lvl?'on':''}${n===+k.tgt?' tg':''}" onclick="lvl('${E(k.id)}',${n})"></button>`).join('')}</div></div>`).join('')}
+return h}
+function lvl(id,n){const s=get(id);if(!s)return;const hit=n>=+s.tgt&&+s.lvl<+s.tgt;s.lvl=n;s.updated=Date.now();commit();buzz(8);if(hit){confetti();toast('Target reached: '+s.name)}}
+function setMe(k,v){const m=get('me');m[k]=v;m.updated=Date.now();commit()}
+
+function cvHTML(){const m=me(),a=accaPct(),passed=live('acca').filter(x=>['Passed','Exempt'].includes(x.st)).sort((x,z)=>pOrd(x.c)-pOrd(z.c)).map(x=>x.c),
+J=live('job').sort((x,y)=>(y.start||'').localeCompare(x.start||'')),sk=live('skill').filter(s=>+s.lvl>=3).sort((x,y)=>y.lvl-x.lvl).map(s=>E(s.name)),
+W=live('win').sort((x,y)=>(y.date||'').localeCompare(x.date||'')).slice(0,5),C=live('cpd').sort((x,y)=>(y.date||'').localeCompare(x.date||'')).slice(0,5);
+return `<div id="cv"><h1>${E(m.name||'Your name')}</h1><div class="cvc">${[m.loc,m.email,m.phone,m.link].filter(Boolean).map(E).join(' · ')}</div>
+${m.summary?`<h4>Profile</h4><p>${E(m.summary)}</p>`:''}
+${J.length?`<h4>Experience</h4>${J.map(j=>`<div class="cvi"><div class="cvr"><b>${E(j.title)}</b><span>${mon(j.start)} – ${mon(j.end)||'Present'}</span></div><div class="cvs">${E(j.co)}${j.loc?', '+E(j.loc):''}</div>${j.pts?`<ul>${j.pts.split('\n').map(p=>p.trim()).filter(Boolean).map(p=>`<li>${E(p)}</li>`).join('')}</ul>`:''}</div>`).join('')}`:''}
+${m.cvw&&W.length?`<h4>Key achievements</h4><ul>${W.map(w=>`<li>${E(w.title)}${w.impact?' — '+E(w.impact):''}</li>`).join('')}</ul>`:''}
+<h4>Education &amp; qualifications</h4>
+<div class="cvi"><div class="cvr"><b>ACCA ${a.done===13?'(all papers completed)':'(in progress)'}</b><span>${a.done}/13 papers</span></div>${passed.length?`<div class="cvs">Completed: ${passed.join(', ')}</div>`:''}</div>
+${live('edu').sort((x,y)=>(y.end||'9').localeCompare(x.end||'9')).map(e=>`<div class="cvi"><div class="cvr"><b>${E(e.qual)}</b><span>${mon(e.start)} – ${mon(e.end)||'Present'}</span></div><div class="cvs">${E(e.inst)}${e.grade?' · '+E(e.grade):''}</div></div>`).join('')}
+${sk.length?`<h4>Skills</h4><p>${sk.join(' · ')}</p>`:''}
+${m.cvl&&C.length?`<h4>Training</h4><ul>${C.map(c=>`<li>${E(c.title)} (${num(c.hrs)} h)</li>`).join('')}</ul>`:''}</div>`}
+function printCV(){if(tab!=='profile'||SEG.profile!=='cv'){SEG.profile='cv';go('profile')}setTimeout(()=>{try{print()}catch(e){toast('Printing is not available here')}},150)}
+function copyCV(){const t=$('#cv').innerText;navigator.clipboard.writeText(t).then(()=>toast('Resume copied')).catch(()=>toast('Could not copy'))}
+
+// ---------- add / edit sheet ----------
+const FORMS={
+goal:['goal',[['title','Goal','text',{req:1}],['area','Area','select',AREAS],['due','Due date','date'],['pct','Progress','range'],['next','Next action','text',{ph:'The very next step'}],['notes','Notes','textarea']]],
+win:['win',[['date','Date','date',{req:1}],['title','What I did','text',{req:1}],['impact','Impact / result','text',{ph:'e.g. Close 2 days faster, RM 40k saved'}]]],
+cpd:['learning',[['date','Date','date',{req:1}],['title','Course, book or webinar','text',{req:1}],['type','Type','select',CPDT],['hrs','Hours','number',{step:'0.5'}],['ver','Verifiable (has proof, counts for ACCA CPD)','check']]],
+job:['job',[['title','Job title','text',{req:1}],['co','Company','text',{req:1}],['loc','Location','text'],['start','Start','month'],['end','End (blank = present)','month'],['pts','Key points, one per line','textarea',{rows:5}]]],
+edu:['education',[['inst','Institution','text',{req:1}],['qual','Qualification','text',{ph:'e.g. Bachelor of Accounting'}],['grade','Grade / CGPA','text'],['start','Start','month'],['end','End','month']]],
+skill:['skill',[['name','Skill','text',{req:1}],['lvl','Current level','select',[1,2,3,4,5]],['tgt','Target level','select',[1,2,3,4,5]]]],
+acca:['paper',[['st','Status','select',ST],['date','Exam date','date'],['score','Score (out of 100)','number',{step:'1'}]]],
+me:['details',[['name','Full name','text'],['role','Current role','text'],['target','Target role','text'],['email','Email','email'],['phone','Phone','tel'],['loc','Location','text'],['link','LinkedIn URL','url'],['summary','Profile summary (2–3 lines)','textarea',{rows:4}]]]};
+const DEF={goal:()=>({area:'Work',pct:0}),win:()=>({date:today()}),cpd:()=>({date:today(),type:'Course',hrs:1}),skill:()=>({lvl:1,tgt:4})};
+function openE(k,id){editK=k;editId=id||null;const it=id?get(id):(DEF[k]?DEF[k]():{});if(!it)return;const[t,F]=FORMS[k];
+$('#et').textContent=k==='acca'?it.c+' · '+it.n:k==='me'?'Your details':(id?'Edit ':'Add ')+t;
+$('#eb').innerHTML=F.map(([f,l,ty,o])=>{o=o||{};const v=it[f]??'',a=`id="e_${f}" name="${f}"${o.req?' required':''}${o.ph?` placeholder="${E(o.ph)}"`:''}`;
+if(ty==='select')return `<label class="f"><span>${l}</span><select ${a}>${o.map(x=>`<option${String(x)===String(v)?' selected':''}>${E(x)}</option>`).join('')}</select></label>`;
+if(ty==='textarea')return `<label class="f"><span>${l}</span><textarea ${a} rows="${o.rows||3}">${E(v)}</textarea></label>`;
+if(ty==='check')return `<label class="switch"><span>${l}</span><input type="checkbox" ${a}${v?' checked':''}></label>`;
+if(ty==='range')return `<label class="f"><span>${l}</span><input type="range" min="0" max="100" step="5" ${a} value="${+v||0}" oninput="$('#rv').textContent=this.value+'%'"></label><div id="rv">${+v||0}%</div>`;
+return `<label class="f"><span>${l}</span><input type="${ty}" ${a} value="${E(v)}"${ty==='number'?` inputmode="decimal" min="0" step="${o.step||'any'}"`:''}${ty==='text'?' autocomplete="off"':''}></label>`}).join('');
+$('#ex').hidden=!id||k==='acca'||k==='me';$('#ed').showModal();try{history.pushState(null,'','#'+SL[tab])}catch(e){}}
+$('#ef').onsubmit=e=>{e.preventDefault();const[t,F]=FORMS[editK],now=Date.now();let it=editId&&get(editId),isNew=!it;
+if(!it){it={id:uid(),kind:editK};D.items.push(it)}const was={...it};
+F.forEach(([f,,ty])=>{const el=$('#e_'+f);let v=ty==='check'?(el.checked?1:0):el.value.trim();if(ty==='number'||ty==='range'||f==='lvl'||f==='tgt')v=v===''?'':+v;it[f]=v});
+if(editK==='acca'&&it.score!==''&&(it.score<0||it.score>100))return alert('Score must be between 0 and 100.');
+if(editK==='job'&&it.start&&it.end&&it.end<it.start)return alert('End month is before the start month.');
+it.updated=now;$('#ed').close();commit();
+if(editK==='acca'&&it.st==='Passed'&&was.st!=='Passed'){confetti();buzz([10,40,10]);toast(it.c+' passed! 🎉')}
+else if(editK==='goal'&&+it.pct>=100&&+(was.pct||0)<100){confetti();toast('Goal done! 🎉')}
+else toast(isNew?t.charAt(0).toUpperCase()+t.slice(1)+' saved':'Saved')};
+function delE(){const it=get(editId);if(!it)return;it.deleted=1;it.updated=Date.now();$('#ed').close();save();render();toast('Deleted',()=>{it.deleted=0;it.updated=Date.now();commit();toast('Restored')})}
+
+function toast(t,undo,lab){buzz(8);const e=$('#toast');e.innerHTML='<span>'+E(t)+'</span>'+(undo?'<button class="g" id="tu">'+E(lab||'Undo')+'</button>':'');e.hidden=false;clearTimeout(TT);
+if(undo){UP=1;$('#tu').onclick=()=>{UP=0;e.hidden=true;clearTimeout(TT);undo()}}TT=setTimeout(()=>{e.hidden=true;if(UP){UP=0;sync()}},lab?12000:undo?5000:2200)}
+
+// ---------- Google Sheets sync ----------
+const okUrl=u=>/^https:\/\/script\.google\.com\/(a\/macros\/[\w.-]+|macros)\/s\/[\w-]{20,}\/(exec|dev)$/.test(u||'');
+function sy(t,s){const p=$('#sy');p.className='pill '+(s||'');$('#syt').textContent=t}
+function syIdle(){const c=D.cfg;if(!c.url)sy('Local only');else if(c.fails&&c.lastErr)sy('Sync failed','err');else sy(c.lastAt?'Synced '+new Date(c.lastAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'Not synced',c.lastAt?'ok':'')}
+const msg=t=>{const e=$('#msg');if(e)e.textContent=t};
+function commit(){save();render();if(D.cfg.url){clearTimeout(T);T=setTimeout(sync,1500)}}
+function merge(list){list=(Array.isArray(list)?list:[]).map(clean).filter(Boolean);VER++;const m=new Map(D.items.map(i=>[i.id,i]));list.forEach(i=>{const o=m.get(i.id);if(!o||o.updated<i.updated)m.set(i.id,i)});D.items=[...m.values()];ensure()}
+async function api(o,ms){const c=D.cfg;if(!okUrl(c.url))throw new Error('the web app link must start with https://script.google.com/macros/s/ and end with /exec');
+const ac=new AbortController(),t=ms||30000,tm=setTimeout(()=>ac.abort(),t);let r;
+try{r=await fetch(c.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:c.token,...o}),signal:ac.signal,referrerPolicy:'no-referrer'})}
+catch(e){throw new Error(e.name==='AbortError'?'no reply from Google after '+Math.round(t/1000)+' seconds':navigator.onLine===false?'you are offline':'could not reach Google ('+e.message+')')}finally{clearTimeout(tm)}
+const tx=await r.text();let j;try{j=JSON.parse(tx)}catch(e){throw new Error(/<html/i.test(tx)?'Google sent a web page instead of data. Check the web app link and that access is set to Anyone':'unreadable reply from Google')}
+if(j&&j.error)throw new Error(j.error);return j}
+function evs(){const o=[];live('acca').filter(p=>p.st==='Booked'&&p.date).forEach(p=>o.push({key:'acca-'+p.c,date:p.date,title:'ACCA '+p.c+' exam'}));
+live('goal').filter(g=>g.due&&+g.pct<100).forEach(g=>o.push({key:'goal-'+g.id,date:g.due,title:'Goal due: '+g.title}));return o}
+async function sync(manual){if(busy||(UP&&!manual))return;busy=1;try{await sync0(manual)}finally{busy=0}}
+async function sync0(manual){const c=D.cfg;if(!c.url){if(manual)msg('Paste your web app link first.');return}
+msg('Syncing…');sy('Syncing…','busy');try{const j=await api({items:D.items,events:c.cal?evs():undefined},60000);
+merge(j.items);if(j.bk)c.bk=j.bk;c.sv=j.v||0;c.fails=0;c.lastErr='';c.lastAt=Date.now();if(c.cal&&j.cal&&j.cal!=='ok')logE('calendar',j.cal);await save();render();syIdle();
+msg('Synced '+new Date().toLocaleString('en-GB')+(c.cal?(j.cal==='ok'?' · calendar updated':' · calendar problem: '+j.cal):''))}
+catch(e){c.fails=(c.fails||0)+1;c.lastErr=e.message;logE('sync',e);save();sy('Sync failed','err');msg('Sync failed: '+e.message+'. Your data is safe on this device.')}}
+
+// ---------- settings ----------
+function openSettings(){const c=D.cfg,d=$('#st'),y=d.open?d.scrollTop:0,lg=LOG.slice(0,LOGALL?100:4);
+$('#stc').innerHTML=`<h2>Settings</h2>
+<h3>Connection</h3>
+<label class="f"><span>Web app link</span><input id="s_url" value="${E(c.url||'')}" placeholder="https://script.google.com/macros/s/…/exec" inputmode="url" autocomplete="off" spellcheck="false"></label>
+<label class="f"><span>Secret word (same as in Code.gs)</span><input id="s_tok" type="password" value="${E(c.token||'')}" autocomplete="off" spellcheck="false"></label>
+${c.token&&c.token.length<16?'<p class="m" style="color:var(--amb)">Your secret word is short. Someone who finds your web app link could guess it.</p>':''}
+<div class="btns" style="margin-top:12px"><button class="btn pri" onclick="saveConn()">Save &amp; connect</button><button class="btn" onclick="diag()" ${c.url?'':'disabled'}>Run checks</button><button class="btn sm" onclick="mkTok()">🔑 Make a strong secret word</button></div>
+<div id="diagOut"></div>
+<h3>Sync</h3><p class="m" id="msg">${c.url?(c.lastAt?'Last synced '+ago(c.lastAt):'Not synced yet')+(c.fails&&c.lastErr?' · '+E(c.lastErr):''):'Not connected. Everything stays on this device until you connect.'}</p>
+<div class="btns"><button class="btn sm" onclick="sync(1).then(openSettings)" ${c.url?'':'disabled'}>↻ Sync now</button></div>
+<label class="switch"><span>Add exams and goal due dates to Google Calendar</span><input type="checkbox" ${c.cal?'checked':''} onchange="D.cfg.cal=this.checked;save();sync(1)"></label>
+<p class="m">They go to a “Career” calendar with alerts 7 days and 1 day before.</p>
+<h3>Learning</h3><label class="f"><span>Yearly learning target (hours)</span><input type="number" inputmode="numeric" min="1" value="${+c.cpdT||40}" onchange="D.cfg.cpdT=Math.max(1,+this.value||40);save();render()"></label>
+<p class="m">ACCA members need 40 units a year, 21 of them verifiable.</p>
+<h3>Backup &amp; recovery</h3>
+<p class="m">Your records live on this device, in your Google Sheet when connected, and in daily Drive backups (last 40 kept).</p>
+<div class="r"><span class="m">Daily Drive backup</span><b>${c.url?(c.bk?fd(c.bk):'After the next sync'):'Needs sync'}</b></div><div class="r"><span class="m">Last backup file</span><b>${c.lastExport?fd(c.lastExport):'Never'}</b></div><div class="r"><span class="m">Records</span><b>${D.items.filter(i=>!i.deleted).length}</b></div>
+<div class="btns mt"><button class="btn sm" onclick="exp()">⬇ Export file</button><button class="btn sm" onclick="$('#imp').click()">⬆ Import file</button><button class="btn sm" onclick="rbList()" ${c.url?'':'disabled'}>☁ Restore from Drive</button></div>
+<div id="rbOut"></div>
+<h3>Logs</h3><p class="m">${LOG.length?LOG.length+' problem'+(LOG.length>1?'s':'')+' recorded on this device. Script errors also go to the Log tab of your Google Sheet.':'No problems recorded. 👍'}</p>
+${lg.map(x=>`<div class="logline">${new Date(x.t).toLocaleString('en-GB')} · ${E(x.a)} · ${E(x.m)}</div>`).join('')}
+${LOG.length>4?`<button class="btn sm mt" onclick="LOGALL=!LOGALL;openSettings()">${LOGALL?'Show less':'Show all'}</button>`:''}${LOG.length?' <button class="btn sm mt" onclick="LOG=[];kv(\'put\',\'log\',[]);openSettings()">Clear</button>':''}
+<h3>About</h3><p class="m">Ladder ${APP_V}${c.sv?' · script v'+c.sv+(c.sv<CODE_V?' (update Code.gs)':''):''}</p>
+<div class="btns" style="margin-top:20px"><button class="btn" style="flex:1" onclick="$('#st').close()">Close</button></div>`;
+if(!d.open){d.showModal();try{history.pushState(null,'','#'+SL[tab])}catch(e){}}d.scrollTop=y}
+async function saveConn(){const u=$('#s_url').value.trim(),t=$('#s_tok').value.trim();if(u&&!okUrl(u))return alert('That link does not look right. It should start with https://script.google.com/macros/s/ and end with /exec');
+D.cfg.url=u;D.cfg.token=t;D.cfg.fails=0;D.cfg.lastErr='';await save();syIdle();openSettings();if(u)await sync(1);openSettings()}
+function mkTok(){const a=new Uint8Array(18);crypto.getRandomValues(a);const t=btoa(String.fromCharCode(...a)).replace(/[+/=]/g,'').slice(0,24);$('#s_tok').type='text';$('#s_tok').value=t;
+navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>toast('Copied. Paste it into TOKEN in Code.gs')).catch(()=>{})}
+async function diag(){const o=$('#diagOut');o.innerHTML='<p class="m">Checking…</p>';try{const h=await api({action:'health'}),ok=(b,t)=>`<div class="r"><span>${b?'✅':'⚠️'} ${t}</span></div>`;
+o.innerHTML='<div class="c">'+ok(1,'Connected · script v'+h.v+(h.v<CODE_V?' (newer Code.gs available)':''))+ok(1,'Sheet: <a href="'+E(h.sheet.url)+'" target="_blank" rel="noopener" style="color:var(--cy)">'+E(h.sheet.name)+'</a> · '+h.sheet.rows+' rows')+
+ok(!!h.backups,'Drive backups'+(h.backups?' · last '+E(h.backups.last||'—'):' · after first sync'))+ok(!D.cfg.cal||h.calendar,'Calendar'+(D.cfg.cal?(h.calendar?' ready':' not created yet'):' off'))+ok(!h.errors,h.errors?h.errors+' errors in the Log tab':'No script errors')+'</div>'}
+catch(e){o.innerHTML='<p class="m s2">Check failed: '+E(e.message)+'</p>'}}
+async function rbList(){const o=$('#rbOut');o.innerHTML='<p class="m">Loading backups…</p>';try{const j=await api({action:'backups'});
+o.innerHTML=j.backups.length?'<div class="c">'+j.backups.map(b=>`<div class="pc" onclick="rbGet('${E(b.fid)}','${E(b.name)}')"><div style="flex:1">${E(b.name.replace('ladder-backup-','').replace('.json',''))}</div><span class="m">${Math.round(b.size/1024)} KB</span></div>`).join('')+'</div>':'<p class="m">No backups yet.</p>'}catch(e){o.innerHTML='<p class="m s2">'+E(e.message)+'</p>'}}
+async function rbGet(fid,name){if(!confirm('Restore records from '+name+'? They will replace the current versions. A safety backup is made first.'))return;
+try{await api({action:'snap'});const j=await api({action:'getbackup',fid}),b=JSON.parse(j.data),now=Date.now();merge((b.items||[]).map(i=>({...i,updated:now})));await save();render();await sync(1);openSettings();toast('Restored '+(b.items||[]).length+' records')}
+catch(e){alert('Could not restore: '+e.message)}}
+async function exp(){const b=new Blob([JSON.stringify({v:1,app:'Ladder',items:D.items})],{type:'application/json'}),f=new File([b],'ladder-backup-'+today()+'.json',{type:'application/json'});
+const okx=()=>{D.cfg.lastExport=today();save();toast('Backup file ready')};try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});okx();return}}catch(e){if(e.name==='AbortError')return;logE('export',e)}
+const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=f.name;a.click();okx()}
+async function imp(inp){const f=inp.files[0];if(!f)return;try{const j=JSON.parse(await f.text());let list=j.items;if(!Array.isArray(list)&&j.acca)list=fromV1(j);if(!Array.isArray(list))throw new Error('no records found in the file');
+merge(list);commit();toast('Imported '+list.length+' records')}catch(e){logE('import',e);alert('Could not import that file: '+e.message+'. Pick a Ladder backup (.json) file.')}inp.value=''}
+
+// ---------- start ----------
+addEventListener('popstate',()=>{const d=document.querySelector('dialog[open]');if(d){d.close();return}const h=location.hash.slice(1);
+if(h==='add-win'||h==='add-learning'){go('journal');SEG.journal=h==='add-win'?'win':'cpd';render();return openE(h==='add-win'?'win':'cpd')}if(SL[h]&&h!==tab)go(h,1)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')fab(0)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&D.cfg.url&&Date.now()-(D.cfg.lastAt||0)>60000)sync()});
+addEventListener('online',()=>{if(D.cfg.url)sync()});
+load().then(()=>{const h=location.hash.slice(1);if(SL[h])tab=h;render();syIdle();
+if(h==='add-win'||h==='add-learning'){tab='journal';SEG.journal=h==='add-win'?'win':'cpd';render();openE(SEG.journal)}
+if(D.cfg.url)sync()});
+if('serviceWorker'in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').then(r=>{r.onupdatefound=()=>{const w=r.installing;if(w)w.onstatechange=()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)toast('A new version of Ladder is ready',()=>location.reload(),'Reload')}}}).catch(e=>logE('app','Offline support could not start: '+e.message))}
+</script>
+</body></html>
