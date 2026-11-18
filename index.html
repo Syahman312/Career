@@ -172,7 +172,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.18a',CODE_V=1;
+const APP_V='2026.11.18b',CODE_V=1;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
@@ -219,6 +219,20 @@ function accaPct(v){v=v||qv();if(v==='new'){const core=NQ.filter(q=>!q[2].starts
 const done=core.filter(q=>okSt(pc(q[3]))).length+Math.min(1,opt.filter(q=>okSt(pc(q[3]))).length);return{done,total:11,pct:done/11*100}}
 const A=live('acca').filter(a=>OLDC.has(a.c)),req=A.filter(a=>!a.l.startsWith('Options')),opt=A.filter(a=>a.l.startsWith('Options')&&okSt(a)).length;
 const done=req.filter(okSt).length+Math.min(2,opt);return{done,total:13,pct:done/13*100}}
+// ---------- Flow link: read Flow's study data from this device (same site, read-only) ----------
+const FST={Planned:'Not started',Studying:'Studying','Exam booked':'Booked',Passed:'Passed',Exempt:'Exempt'};let FLOW=null;
+function readFlow(){FLOW=null;if(D.cfg.flowOff)return;let db;try{db=JSON.parse(localStorage.getItem('flow2.db')||'null')}catch(e){return}if(!db||typeof db.papers!=='object')return;
+const P={},byId={},yr={};let all=0;
+Object.values(db.papers||{}).forEach(x=>{if(!x||x.deleted)return;const c=String(x.code||'').toUpperCase().trim();if(!(x.kind==='ACCA'||(!x.kind&&OLDC.has(c))))return;if(!(OLDC.has(c)||c==='SDS'||c==='EPSM'))return;
+P[c]={st:FST[x.status]||'',exam:/^\d{4}-\d{2}-\d{2}$/.test(x.exam||'')?x.exam:'',score:x.score!=null&&x.score!==''&&isFinite(+x.score)?+x.score:'',tgt:+x.target||0,up:+x.updated||0,mins:0};byId[x.id]=c});
+Object.values(db.sessions||{}).forEach(x=>{if(!x||x.deleted||!(+x.mins>0))return;const m=+x.mins,c=byId[x.paper],y=String(x.date||'').slice(0,4);if(c)P[c].mins+=m;if(x.paper&&db.papers[x.paper]){all+=m;yr[y]=(yr[y]||0)+m}});
+FLOW={P,yr,all,n:Object.keys(P).length}}
+const fH=c=>{const x=FLOW&&FLOW.P[c];return x&&(x.mins||x.tgt)?'📚 '+num(x.mins/60)+(x.tgt?' / '+x.tgt:'')+' h in Flow':''};
+const flowYrH=y=>FLOW&&D.cfg.flowHrs!==0?(FLOW.yr[y]||0)/60:0;
+function flowDiffs(){if(!FLOW)return[];const ign=+D.cfg.flowIgn||0,o=[];Object.entries(FLOW.P).forEach(([c,x])=>{const it=pc(c);if(!it||x.up<=Math.max(+it.updated||0,ign))return;const ch={};
+if(x.st&&x.st!==it.st&&!(x.st==='Not started'&&okSt(it)))ch.st=x.st;if(x.exam&&x.exam!==it.date)ch.date=x.exam;if(x.score!==''&&+x.score!==+it.score)ch.score=x.score;if(Object.keys(ch).length)o.push([c,ch])});return o}
+function flowApply(){const now=Date.now(),L=flowDiffs();L.forEach(([c,ch])=>{const it=pc(c);Object.assign(it,ch);it.updated=now});commit();toast('Updated '+L.length+' paper'+(L.length>1?'s':'')+' from Flow')}
+function flowIgnore(){D.cfg.flowIgn=Date.now();save();render()}
 const modSrc=c=>c==='RBM'?(okSt(pc('BT'))?'BT':''):c==='ESL'?(okSt(pc('EPSM'))?'EPSM':''):c==='DTI'?(['LW','PM','TX','FR','AA','FM'].every(x=>okSt(pc(x)))?'all Applied Skills':''):'';
 // ---------- next role: choose yourself or automatic ----------
 const LAD=['Intern','Executive','Senior Executive','Assistant Manager','Manager','Senior Manager','Financial Controller','Head of Finance','Chief Financial Officer'];
@@ -272,7 +286,7 @@ if(old&&old.acca){D.items=fromV1(old);D.cfg.v1=1;setTimeout(()=>toast('Brought o
 ensure();VER++;save()}
 
 // ---------- render ----------
-function render(){const m=me(),a=accaPct();
+function render(){readFlow();const m=me(),a=accaPct();
 $('#nm').textContent=m.name||'NextRole';$('#av').textContent=(m.name||'N').trim().charAt(0).toUpperCase()||'N';
 $('#sub').textContent=m.target?'Next: '+m.target:m.role||'Set your role in Profile';
 $('#odo').innerHTML=a.done+'/'+a.total+'<small>ACCA</small>';
@@ -293,7 +307,7 @@ lastWin=W.map(w=>w.date).sort().pop(),nudge=!lastWin||dd(lastWin)<-14;
 return `<p class="hi">${h<12?'Good morning':h<18?'Good afternoon':'Good evening'}${m.name?', <b>'+E(m.name.split(' ')[0])+'</b>':''}.</p>
 <div class="c glow mt"><div class="hero">${ring(a.pct,Math.round(a.pct)+'%','ACCA')}<div style="min-width:0"><div class="m">Now</div><b>${E(m.role||'—')}</b><div class="m mt">Next role${m.tmode==='auto'?' <span class="tag s3" style="font-size:10.5px">Auto</span>':''}</div><b class="cl" onclick="openE('me','me')" title="Change next role">${E(m.target||'Tap to set')}</b></div></div>
 ${passed.length?`<div class="chips">${passed.map(p=>`<span class="chip2 s0">✓ ${E(p.c)}</span>`).join('')}</div>`:''}</div>
-${kpis([['Goals',Math.round(gp)+'%'],['Next exam',ne?E(ne.c)+' · '+dd(ne.date)+'d':'—',ne&&dd(ne.date)<=30?'s1':''],['Learning '+y,num(hrs)+' h']])}
+${kpis([['Goals',Math.round(gp)+'%'],['Next exam',ne?E(ne.c)+' · '+dd(ne.date)+'d':'—',ne&&dd(ne.date)<=30?'s1':''],['Learning '+y,num(hrs+flowYrH(y))+' h']])}
 ${nudge?`<div class="c cl" style="border-color:var(--amb)" onclick="openE('win')"><b>🏆 ${lastWin?'No wins logged for '+Math.abs(dd(lastWin))+' days':'Log your first win'}</b><div class="m">Small things count. Note the impact while it is fresh. It feeds your appraisal and resume.</div></div>`:''}
 <div class="ins"><div class="c"><span class="m">Wins this year</span><b>${wy}</b><span class="m">${W.length} all time</span></div><div class="c"><span class="m">Open goals</span><b>${og.length}</b><span class="m">${G.length-og.length} done</span></div><div class="c"><span class="m">Skills at target</span><b>${atT}/${S.length}</b><span class="m">Profile › Skills</span></div></div>
 ${up.length?'<section>'+sh('Coming up')+'<div class="c">'+up.map(u=>{const n=dd(u.d);return `<div class="pc" onclick="openE('${u.k}','${E(u.id)}')"><div style="flex:1;min-width:0"><b>${E(u.t)}</b><div class="m">${E(u.s||'')} · ${fd(u.d)}</div></div><span class="tag ${n<0?'s2':n<=14?'s1':'s3'}">${inD(n)}</span></div>`}).join('')+'</div></section>':''}
@@ -321,7 +335,7 @@ return t}
 function accaTab(){const v=qv(),a=accaPct(v),A=live('acca'),sat=A.filter(p=>['Passed','Failed'].includes(p.st)),pass=sat.filter(p=>p.st==='Passed'),ex=A.filter(p=>p.st==='Exempt'&&p.c!=='EPSM'),sc=pass.filter(p=>p.score!==''&&p.score!=null&&+p.score>0),ne=nextExam(),
 cols=['#22e3ff','#4ade80','#fbbf24','#a78bfa'],left=a.total-a.done,
 lv=v==='new'?[...new Set(NQ.map(q=>q[2]))]:[...new Set(PAPERS.map(p=>p[2]))],
-grp=l=>v==='new'?NQ.filter(q=>q[2]===l).map(q=>({p:pc(q[3]),code:q[0],name:q[1],sub:q[3]==='SDS'?'New option':'Was '+q[3]})):PAPERS.filter(x=>x[2]===l).map(x=>({p:pc(x[0]),code:x[0],name:x[1],sub:''})),
+grp=l=>v==='new'?NQ.filter(q=>q[2]===l).map(q=>({p:pc(q[3]),code:q[0],name:q[1],sub:[q[3]==='SDS'?'New option':'Was '+q[3],okSt(pc(q[3]))?'':fH(q[3])].filter(Boolean).join(' · ')})):PAPERS.filter(x=>x[2]===l).map(x=>({p:pc(x[0]),code:x[0],name:x[1],sub:okSt(pc(x[0]))?'':fH(x[0])})),
 need=l=>l.startsWith('Options')?(v==='new'?1:2):grp(l).length,dn=l=>Math.min(need(l),grp(l).filter(r=>okSt(r.p)).length),
 dl=dd(TRANS),tips=dl>0?transTips():[];
 let h=`<div class="seg"><button class="${v==='old'?'on':''}" onclick="setQv('old')">Current · 13 papers</button><button class="${v==='new'?'on':''}" onclick="setQv('new')">From Sep 2027 · 11</button></div>
@@ -331,6 +345,7 @@ let h=`<div class="seg"><button class="${v==='old'?'on':''}" onclick="setQv('old
 <div class="m">${lv.map((l,k)=>`<span style="color:${cols[k]}">■</span> ${l.replace(/ – pick \d/,'')}`).join(' &nbsp; ')}</div>
 <div class="btns mt"><button class="btn sm" onclick="openEx()">🎓 Set exemptions</button></div></div>
 ${kpis([['Passed',pass.length,'s0'],['Exempt',ex.length,'s5'],['Avg score',sc.length?Math.round(sum(sc,'score')/sc.length):'—']])}`;
+const fd0=flowDiffs();if(fd0.length)h+=`<div class="c" style="border-color:var(--cy)"><b>Flow has newer info for ${fd0.length} paper${fd0.length>1?'s':''}</b><ul class="m" style="margin:6px 0 0;padding-left:18px">${fd0.map(([c,ch])=>`<li><b style="color:var(--tx)">${c}</b>: ${[ch.st,ch.date?'exam '+fd(ch.date):'',ch.score!==undefined?ch.score+' marks':''].filter(Boolean).join(' · ')}</li>`).join('')}</ul><div class="btns mt"><button class="btn sm pri" onclick="flowApply()">Update from Flow</button><button class="btn sm" onclick="flowIgnore()">Ignore</button></div></div>`;
 if(tips.length)h+=`<div class="c" style="border-color:var(--amb)"><div class="r"><b>Syllabus change: September 2027</b><span class="tag s1">${Math.ceil(dl/7)} weeks</span></div><div class="m">June 2027 is the last sitting of the current Applied Skills and Strategic exams. Everything you pass or are exempt from carries over as credit. For you:</div><ul class="m" style="margin:8px 0 0;padding-left:18px">${tips.map(t=>`<li style="margin:4px 0">${t}</li>`).join('')}</ul></div>`;
 h+=lv.map(l=>'<section>'+sh(l,dn(l)+'/'+need(l))+'<div class="c">'+grp(l).map(r=>{const p=r.p;if(!p)return '';const ok=okSt(p),tg=v==='new'&&ok?'Credit':p.st,tc=v==='new'&&ok?'s0':stc(p.st);return prow(p,r.code,r.name,r.sub,tg,tc)}).join('')+'</div></section>').join('');
 if(v==='new'){const M=[['DTI','Digital Tech & Innovation'],['RBM','Responsible Business Management'],['ESL','Ethical, Sustainable Leadership']];
@@ -357,8 +372,8 @@ if(s==='win'){const W=srt(live('win')),mo=today().slice(0,7);
 h+=kpis([['This month',W.filter(w=>(w.date||'').startsWith(mo)).length],['This year',W.filter(w=>(w.date||'').startsWith(y)).length],['All time',W.length]])+
 '<p class="m">For appraisals and your resume. Say what changed: time saved, RM, accuracy, people helped.</p>'+
 (W.length?tline(W,w=>`<div class="ti" onclick="openE('win','${E(w.id)}')"><span class="ic w">🏆</span><div class="r"><b>${E(w.title)}</b><span class="m">${sd(w.date)}</span></div>${w.impact?`<div class="m">${E(w.impact)}</div>`:''}</div>`,a=>a.length+' win'+(a.length>1?'s':'')):'<p class="m mt">No wins yet. Tap + to log one this week.</p>')}
-else{const C=srt(live('cpd')),CY=C.filter(c=>(c.date||'').startsWith(y)),hy=sum(CY,'hrs'),vy=sum(CY.filter(c=>c.ver),'hrs'),tg=+D.cfg.cpdT||40;
-h+=`<div class="c glow mt"><div class="r"><b>${y} learning</b><b>${num(hy)} / ${tg} h</b></div><div class="bar"><i style="width:${Math.min(100,hy/tg*100)}%;${hy>=tg?'background:var(--grn)':''}"></i></div><div class="m">${num(vy)} h verifiable · ${hy>=tg?'Target met 🎉':num(tg-hy)+' h to go'} · change target in Settings</div></div>`+
+else{const C=srt(live('cpd')),CY=C.filter(c=>(c.date||'').startsWith(y)),fy=flowYrH(y),hy=sum(CY,'hrs')+fy,vy=sum(CY.filter(c=>c.ver),'hrs'),tg=+D.cfg.cpdT||40;
+h+=`<div class="c glow mt"><div class="r"><b>${y} learning</b><b>${num(hy)} / ${tg} h</b></div><div class="bar"><i style="width:${Math.min(100,hy/tg*100)}%;${hy>=tg?'background:var(--grn)':''}"></i></div><div class="m">${fy?num(fy)+' h study from Flow · ':''}${num(vy)} h verifiable · ${hy>=tg?'Target met 🎉':num(tg-hy)+' h to go'} · change target in Settings</div></div>`+
 kpis([['Entries',CY.length],['This month',num(sum(C.filter(c=>(c.date||'').startsWith(today().slice(0,7))),'hrs'))+' h'],['All time',num(sum(C,'hrs'))+' h']])+
 (C.length?tline(C,c=>`<div class="ti" onclick="openE('cpd','${E(c.id)}')"><span class="ic">${cico(c.type)}</span><div class="r"><b>${E(c.title)}</b><b>${num(c.hrs)} h</b></div><div class="r"><span class="m">${E(c.type||'')}${c.ver?' · <span class="s0">Verifiable</span>':''}</span><span class="m">${sd(c.date)}</span></div></div>`,a=>num(sum(a,'hrs'))+' h'):'<p class="m mt">Nothing logged yet. Tap + to add a course, book or webinar.</p>')}
 return h}
@@ -470,6 +485,9 @@ ${c.token&&c.token.length<16?'<p class="m" style="color:var(--amb)">Your secret 
 <div class="btns"><button class="btn sm" onclick="sync(1).then(openSettings)" ${c.url?'':'disabled'}>↻ Sync now</button></div>
 <label class="switch"><span>Add exams and goal due dates to Google Calendar</span><input type="checkbox" ${c.cal?'checked':''} onchange="D.cfg.cal=this.checked;save();sync(1)"></label>
 <p class="m">They go to a “Career” calendar with alerts 7 days and 1 day before.</p>
+<h3>Flow</h3><p class="m">${FLOW?'Linked on this device: '+FLOW.n+' ACCA paper'+(FLOW.n===1?'':'s')+', '+num(FLOW.all/60)+' h of study logged.':c.flowOff?'Flow link is off.':'Flow not found on this device. Open Flow once in this same browser, then come back.'} NextRole only reads Flow; it never changes it.</p>
+<label class="switch"><span>Use Flow study data</span><input type="checkbox" ${c.flowOff?'':'checked'} onchange="D.cfg.flowOff=this.checked?0:1;save();render();openSettings()"></label>
+<label class="switch"><span>Count Flow study in learning hours</span><input type="checkbox" ${c.flowHrs===0?'':'checked'} onchange="D.cfg.flowHrs=this.checked?1:0;save();render()"></label>
 <h3>Learning</h3><label class="f"><span>Yearly learning target (hours)</span><input type="number" inputmode="numeric" min="1" value="${+c.cpdT||40}" onchange="D.cfg.cpdT=Math.max(1,+this.value||40);save();render()"></label>
 <p class="m">ACCA members need 40 units a year, 21 of them verifiable.</p>
 <h3>Backup &amp; recovery</h3>
@@ -527,6 +545,8 @@ const T=['home','goals','acca','journal','profile'],k=e.key.toLowerCase();
 if(/^[1-5]$/.test(k))go(T[+k-1]);else if(k==='g')openE('goal');else if(k==='w')openE('win');else if(k==='l')openE('cpd');else if(k==='n')fab();else if(k===',')openSettings();else return;e.preventDefault()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&D.cfg.url&&Date.now()-(D.cfg.lastAt||0)>60000)sync()});
 addEventListener('online',()=>{if(D.cfg.url)sync()});
+addEventListener('storage',e=>{if(e.key==='flow2.db'&&!document.querySelector('dialog[open]'))render()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!document.querySelector('dialog[open]'))render()});
 load().then(()=>{const h=location.hash.slice(1);if(SL[h])tab=h;render();syIdle();
 if(h==='add-win'||h==='add-learning'){tab='journal';SEG.journal=h==='add-win'?'win':'cpd';render();openE(SEG.journal)}
 if(D.cfg.url)sync()});
