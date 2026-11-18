@@ -172,7 +172,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.18b',CODE_V=1;
+const APP_V='2026.11.18c',CODE_V=1;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
@@ -220,13 +220,28 @@ const done=core.filter(q=>okSt(pc(q[3]))).length+Math.min(1,opt.filter(q=>okSt(p
 const A=live('acca').filter(a=>OLDC.has(a.c)),req=A.filter(a=>!a.l.startsWith('Options')),opt=A.filter(a=>a.l.startsWith('Options')&&okSt(a)).length;
 const done=req.filter(okSt).length+Math.min(2,opt);return{done,total:13,pct:done/13*100}}
 // ---------- Flow link: read Flow's study data from this device (same site, read-only) ----------
-const FST={Planned:'Not started',Studying:'Studying','Exam booked':'Booked',Passed:'Passed',Exempt:'Exempt'};let FLOW=null;
-function readFlow(){FLOW=null;if(D.cfg.flowOff)return;let db;try{db=JSON.parse(localStorage.getItem('flow2.db')||'null')}catch(e){return}if(!db||typeof db.papers!=='object')return;
+const FST={Planned:'Not started',Studying:'Studying','Exam booked':'Booked',Passed:'Passed',Exempt:'Exempt'};let FLOW=null,FC=null,fBusy=0;
+const toObj=a=>{const o={};(Array.isArray(a)?a:[]).forEach(r=>{if(r&&r.id)o[r.id]=r});return o};
+function readFlow(){FLOW=null;if(D.cfg.flowOff)return;let db=null,src='device';try{db=JSON.parse(localStorage.getItem('flow2.db')||'null')}catch(e){}
+if(!db||typeof db.papers!=='object'||!Object.keys(db.papers).length){if(FC){db={papers:toObj(FC.papers),sessions:toObj(FC.sessions)};src='google'}else return}
 const P={},byId={},yr={};let all=0;
 Object.values(db.papers||{}).forEach(x=>{if(!x||x.deleted)return;const c=String(x.code||'').toUpperCase().trim();if(!(x.kind==='ACCA'||(!x.kind&&OLDC.has(c))))return;if(!(OLDC.has(c)||c==='SDS'||c==='EPSM'))return;
 P[c]={st:FST[x.status]||'',exam:/^\d{4}-\d{2}-\d{2}$/.test(x.exam||'')?x.exam:'',score:x.score!=null&&x.score!==''&&isFinite(+x.score)?+x.score:'',tgt:+x.target||0,up:+x.updated||0,mins:0};byId[x.id]=c});
 Object.values(db.sessions||{}).forEach(x=>{if(!x||x.deleted||!(+x.mins>0))return;const m=+x.mins,c=byId[x.paper],y=String(x.date||'').slice(0,4);if(c)P[c].mins+=m;if(x.paper&&db.papers[x.paper]){all+=m;yr[y]=(yr[y]||0)+m}});
-FLOW={P,yr,all,n:Object.keys(P).length}}
+FLOW={P,yr,all,n:Object.keys(P).length,src}}
+// Read Flow's papers and study sessions from Flow's own Google web app (works on every device, read-only).
+const fSlim=(r,k)=>{const o={};k.forEach(x=>{if(r[x]!==undefined)o[x]=r[x]});return o};
+async function flowPull(manual){const c=D.cfg;if(fBusy||c.flowOff||!okUrl(c.flowUrl)||!c.flowKey)return;if(!manual&&Date.now()-(c.flowAt||0)<15*6e4)return;fBusy=1;
+const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),60000);
+try{const r=await fetch(c.flowUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'pull',key:c.flowKey,device:'NextRole',since:0,full:true}),signal:ac.signal,credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer'});
+const tx=await r.text();let j;try{j=JSON.parse(tx)}catch(e){throw new Error(/<html/i.test(tx)?'Google sent a web page instead of data. Check the Flow link':'unreadable reply from Flow')}
+if(!j.ok)throw new Error(j.error||'Flow did not accept the request');const d=j.data||{};
+FC={at:Date.now(),papers:(d.papers||[]).map(x=>fSlim(x,['id','kind','code','status','exam','score','target','updated','deleted'])),sessions:(d.sessions||[]).map(x=>fSlim(x,['id','paper','date','mins','deleted']))};
+await kv('put','flowc',FC);c.flowAt=FC.at;c.flowErr='';save();if(!document.querySelector('dialog[open]'))render();if(manual)toast('Read '+FC.papers.length+' subjects from Flow')}
+catch(e){c.flowErr=e.name==='AbortError'?'no reply from Flow after 60 seconds':e.message;logE('flow',c.flowErr);save();if(manual)toast('Could not read Flow: '+c.flowErr)}
+finally{clearTimeout(tm);fBusy=0}}
+async function saveFlowLink(){const u=$('#f_url').value.trim(),k=$('#f_key').value.trim();if(u&&!okUrl(u))return alert('That does not look like a Flow web app link. Copy it from Flow › Settings › Web App URL. It ends with /exec.');
+D.cfg.flowUrl=u;D.cfg.flowKey=k;D.cfg.flowErr='';D.cfg.flowAt=0;if(!u){FC=null;kv('put','flowc',null)}await save();if(u&&k)await flowPull(1);render();openSettings()}
 const fH=c=>{const x=FLOW&&FLOW.P[c];return x&&(x.mins||x.tgt)?'📚 '+num(x.mins/60)+(x.tgt?' / '+x.tgt:'')+' h in Flow':''};
 const flowYrH=y=>FLOW&&D.cfg.flowHrs!==0?(FLOW.yr[y]||0)/60:0;
 function flowDiffs(){if(!FLOW)return[];const ign=+D.cfg.flowIgn||0,o=[];Object.entries(FLOW.P).forEach(([c,x])=>{const it=pc(c);if(!it||x.up<=Math.max(+it.updated||0,ign))return;const ch={};
@@ -280,7 +295,7 @@ const m=S.me||{};o.push({id:'me',kind:'me',name:m.name||'',email:m.email||'',pho
 (S.jobs||[]).forEach(j=>o.push({id:id('job',j.id),kind:'job',co:j.co,title:j.title,loc:j.loc,start:j.start,end:j.end,pts:j.pts,updated:n}));
 (S.edu||[]).forEach(e=>o.push({id:id('edu',e.id),kind:'edu',inst:e.i,qual:e.q,grade:e.g,start:e.start,end:e.end,updated:n}));
 return o.map(clean).filter(Boolean)}
-async function load(){try{const v=await kv('get','d');if(v){D.items=(v.items||[]).map(clean).filter(Boolean);D.cfg={...D.cfg,...v.cfg}}LOG=(await kv('get','log'))||[]}catch(e){logE('storage',e)}
+async function load(){try{const v=await kv('get','d');if(v){D.items=(v.items||[]).map(clean).filter(Boolean);D.cfg={...D.cfg,...v.cfg}}LOG=(await kv('get','log'))||[];FC=(await kv('get','flowc'))||null}catch(e){logE('storage',e)}
 if(!D.items.length){let old=null;try{old=JSON.parse(localStorage.getItem('ladder_v1'))}catch(e){}
 if(old&&old.acca){D.items=fromV1(old);D.cfg.v1=1;setTimeout(()=>toast('Brought over your data from the old Ladder'),600)}else starter()}
 ensure();VER++;save()}
@@ -485,7 +500,12 @@ ${c.token&&c.token.length<16?'<p class="m" style="color:var(--amb)">Your secret 
 <div class="btns"><button class="btn sm" onclick="sync(1).then(openSettings)" ${c.url?'':'disabled'}>↻ Sync now</button></div>
 <label class="switch"><span>Add exams and goal due dates to Google Calendar</span><input type="checkbox" ${c.cal?'checked':''} onchange="D.cfg.cal=this.checked;save();sync(1)"></label>
 <p class="m">They go to a “Career” calendar with alerts 7 days and 1 day before.</p>
-<h3>Flow</h3><p class="m">${FLOW?'Linked on this device: '+FLOW.n+' ACCA paper'+(FLOW.n===1?'':'s')+', '+num(FLOW.all/60)+' h of study logged.':c.flowOff?'Flow link is off.':'Flow not found on this device. Open Flow once in this same browser, then come back.'} NextRole only reads Flow; it never changes it.</p>
+<h3>Flow</h3><p class="m">${FLOW?(FLOW.src==='google'?'Linked through Google':'Linked on this device')+': '+FLOW.n+' ACCA paper'+(FLOW.n===1?'':'s')+', '+num(FLOW.all/60)+' h of study logged.':c.flowOff?'Flow link is off.':'Flow not linked yet.'} NextRole only reads Flow; it never changes it.</p>
+<p class="m">Same browser as Flow: works by itself. iPhone/iPad home-screen apps and other devices: link through Google once on each device. Copy the two values from <b>Flow › Settings</b>.</p>
+<label class="f"><span>Flow Web App URL</span><input id="f_url" value="${E(c.flowUrl||'')}" placeholder="https://script.google.com/macros/s/…/exec" inputmode="url" autocomplete="off" spellcheck="false"></label>
+<label class="f"><span>Flow App key</span><input id="f_key" type="password" value="${E(c.flowKey||'')}" autocomplete="off" spellcheck="false"></label>
+<div class="btns" style="margin-top:12px"><button class="btn sm pri" onclick="saveFlowLink()">${c.flowUrl?'Save &amp; refresh':'Link Flow'}</button>${c.flowUrl?'<button class="btn sm" onclick="flowPull(1).then(openSettings)">↻ Refresh now</button>':''}</div>
+${c.flowUrl?`<p class="m">${c.flowErr?'<span class="s2">Last try failed: '+E(c.flowErr)+'</span>':c.flowAt?'Read from Flow '+ago(c.flowAt)+'. Refreshes every 15 minutes while open.':'Not read yet.'}</p>`:''}
 <label class="switch"><span>Use Flow study data</span><input type="checkbox" ${c.flowOff?'':'checked'} onchange="D.cfg.flowOff=this.checked?0:1;save();render();openSettings()"></label>
 <label class="switch"><span>Count Flow study in learning hours</span><input type="checkbox" ${c.flowHrs===0?'':'checked'} onchange="D.cfg.flowHrs=this.checked?1:0;save();render()"></label>
 <h3>Learning</h3><label class="f"><span>Yearly learning target (hours)</span><input type="number" inputmode="numeric" min="1" value="${+c.cpdT||40}" onchange="D.cfg.cpdT=Math.max(1,+this.value||40);save();render()"></label>
@@ -546,10 +566,10 @@ if(/^[1-5]$/.test(k))go(T[+k-1]);else if(k==='g')openE('goal');else if(k==='w')o
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&D.cfg.url&&Date.now()-(D.cfg.lastAt||0)>60000)sync()});
 addEventListener('online',()=>{if(D.cfg.url)sync()});
 addEventListener('storage',e=>{if(e.key==='flow2.db'&&!document.querySelector('dialog[open]'))render()});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!document.querySelector('dialog[open]'))render()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(!document.querySelector('dialog[open]'))render();flowPull()});
 load().then(()=>{const h=location.hash.slice(1);if(SL[h])tab=h;render();syIdle();
 if(h==='add-win'||h==='add-learning'){tab='journal';SEG.journal=h==='add-win'?'win':'cpd';render();openE(SEG.journal)}
-if(D.cfg.url)sync()});
+if(D.cfg.url)sync();flowPull()});
 if('serviceWorker'in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').then(r=>{r.onupdatefound=()=>{const w=r.installing;if(w)w.onstatechange=()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)toast('A new version of NextRole is ready',()=>location.reload(),'Reload')}}}).catch(e=>logE('app','Offline support could not start: '+e.message))}
 </script>
 </body></html>
