@@ -45,7 +45,7 @@ header .w>div:last-child{flex:none;display:flex;flex-direction:column;align-item
 .m{color:var(--mu);font-size:13px}.mt{margin-top:10px}
 .ct{font-size:16px;font-weight:700;margin:0 0 4px}
 .tag{font-size:12px;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
-.s0{color:var(--grn)}.s1{color:var(--amb)}.s2{color:var(--red)}.s3{color:var(--cy)}.s4{color:var(--mu)}
+.s0{color:var(--grn)}.s1{color:var(--amb)}.s2{color:var(--red)}.s3{color:var(--cy)}.s4{color:var(--mu)}.s5{color:var(--vi)}
 button,input,textarea,select{font:inherit;color:inherit}
 button{background:var(--ac);color:var(--bg);border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
 button:active{transform:scale(.97)}
@@ -111,7 +111,7 @@ label.f{display:block;margin:12px 0 0}label.f>span{display:block;font-size:12.5p
 .ic.w{background:#f59e0b}
 .pc{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer}.pc:last-child{border-bottom:0}.pc:active{opacity:.65}
 .code{width:52px;flex:none;text-align:center;font:700 13px ui-monospace,Consolas,monospace;padding:6px 0;border-radius:10px;background:var(--c2);border:1px solid var(--bd2)}
-.code.s0{border-color:var(--grn)}.code.s1{border-color:var(--amb)}.code.s2{border-color:var(--red)}.code.s3{border-color:var(--cy)}
+.code.s0{border-color:var(--grn)}.code.s1{border-color:var(--amb)}.code.s2{border-color:var(--red)}.code.s3{border-color:var(--cy)}.code.s5{border-color:var(--vi)}
 .dots{display:flex;gap:6px;margin-top:8px}.dots button{width:30px;height:30px;border-radius:50%;padding:0;background:var(--c2);border:1px solid var(--bd2)}
 .dots button.on{background:var(--cy);border-color:var(--cy)}.dots button.tg{outline:2px solid var(--amb);outline-offset:2px}
 .fr{display:flex;gap:6px;overflow-x:auto;margin:10px -14px 4px;padding:0 14px;scrollbar-width:none}.fr::-webkit-scrollbar{display:none}
@@ -172,7 +172,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.17f',CODE_V=1;
+const APP_V='2026.11.18a',CODE_V=1;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
@@ -180,8 +180,15 @@ const PAPERS=[['BT','Business & Technology','Applied Knowledge'],['MA','Manageme
 ['LW','Corporate & Business Law','Applied Skills'],['PM','Performance Management','Applied Skills'],['TX','Taxation','Applied Skills'],['FR','Financial Reporting','Applied Skills'],['AA','Audit & Assurance','Applied Skills'],['FM','Financial Management','Applied Skills'],
 ['SBL','Strategic Business Leader','Strategic Professional'],['SBR','Strategic Business Reporting','Strategic Professional'],
 ['AFM','Advanced Financial Management','Options – pick 2'],['APM','Advanced Performance Management','Options – pick 2'],['ATX','Advanced Taxation','Options – pick 2'],['AAA','Advanced Audit & Assurance','Options – pick 2']];
+const EXTRA=[['SDS','Data Science Professional','2027 option'],['EPSM','Ethics & Professional Skills','Module'],['DTI','Digital Tech & Innovation','2027 module'],['RBM','Responsible Business Management','2027 module'],['ESL','Ethical, Sustainable Leadership','2027 module']],
+OLDC=new Set(PAPERS.map(p=>p[0])),EXP=['BT','MA','FA','LW','PM','TX','FR','AA','FM'],TRANS='2027-09-01',LASTOLD='2027-06-30',
+// ACCA qualification from September 2027 (Knowledge exams from July 2027): new code, name, level, current paper it replaces
+NQ=[['K1','Financial Accounting','Knowledge','FA'],['K2','Management Accounting','Knowledge','MA'],['K3','Business Law','Knowledge','LW'],
+['E1','Taxation','Expertise','TX'],['E2','Financial Reporting','Expertise','FR'],['E3','Audit, Risk & Control','Expertise','AA'],['E4','Finance & Investment','Expertise','FM'],['E5','Performance with Data Analysis','Expertise','PM'],
+['S1','Strategic Business Reporting','Strategic Professional','SBR'],['S2','Strategic Business Leader','Strategic Professional','SBL'],
+['SAA','Advanced Audit & Assurance','Options – pick 1','AAA'],['SCF','Advanced Financial Management','Options – pick 1','AFM'],['STA','Advanced Taxation','Options – pick 1','ATX'],['SPI','Advanced Performance Management','Options – pick 1','APM'],['SDS','Data Science Professional','Options – pick 1','SDS']];
 const ST=['Not started','Exempt','Studying','Booked','Passed','Failed'],AREAS=['Work','ACCA','Skill','Network','Personal'],CPDT=['Course','Webinar','Book','On-the-job','Mentoring','Conference'];
-const stc=s=>({Passed:'s0',Exempt:'s0',Booked:'s1',Studying:'s3',Failed:'s2'}[s]||'s4');
+const stc=s=>({Passed:'s0',Exempt:'s5',Booked:'s1',Studying:'s3',Failed:'s2'}[s]||'s4');
 
 // ---------- storage (IndexedDB) ----------
 const P=new Promise((r,j)=>{const q=indexedDB.open('ladder',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
@@ -207,8 +214,12 @@ ago=t=>{const s=(Date.now()-t)/1e3;return s<60?'just now':s<3600?Math.round(s/60
 safe=f=>{try{return f()}catch(e){logE('render',e);return '<p class="m">Something went wrong showing this part.</p>'}},
 byDue=(a,b)=>(a.due||'9').localeCompare(b.due||'9'),
 pOrd=c=>PAPERS.findIndex(p=>p[0]===c);
-function accaPct(){const A=live('acca'),ok=a=>['Passed','Exempt'].includes(a.st),req=A.filter(a=>!a.l.startsWith('Options')),opt=A.filter(a=>a.l.startsWith('Options')&&ok(a)).length;
-const done=req.filter(ok).length+Math.min(2,opt);return{done,total:13,pct:done/13*100}}
+const okSt=a=>!!a&&['Passed','Exempt'].includes(a.st),pc=c=>get('acca-'+c),qv=()=>D.cfg.qv||(today()>=TRANS?'new':'old');
+function accaPct(v){v=v||qv();if(v==='new'){const core=NQ.filter(q=>!q[2].startsWith('Options')),opt=NQ.filter(q=>q[2].startsWith('Options'));
+const done=core.filter(q=>okSt(pc(q[3]))).length+Math.min(1,opt.filter(q=>okSt(pc(q[3]))).length);return{done,total:11,pct:done/11*100}}
+const A=live('acca').filter(a=>OLDC.has(a.c)),req=A.filter(a=>!a.l.startsWith('Options')),opt=A.filter(a=>a.l.startsWith('Options')&&okSt(a)).length;
+const done=req.filter(okSt).length+Math.min(2,opt);return{done,total:13,pct:done/13*100}}
+const modSrc=c=>c==='RBM'?(okSt(pc('BT'))?'BT':''):c==='ESL'?(okSt(pc('EPSM'))?'EPSM':''):c==='DTI'?(['LW','PM','TX','FR','AA','FM'].every(x=>okSt(pc(x)))?'all Applied Skills':''):'';
 // ---------- next role: choose yourself or automatic ----------
 const LAD=['Intern','Executive','Senior Executive','Assistant Manager','Manager','Senior Manager','Financial Controller','Head of Finance','Chief Financial Officer'];
 const LADRX=[[/chief financial|\bcfo\b/i,8],[/head of|director|\bvp\b/i,7],[/controller/i,6],[/senior manager|\bsm\b/i,5],[/assistant manager|asst\.? manager|\bam\b/i,3],[/manager/i,4],[/senior (executive|associate|analyst|accountant|officer)|\bse\b/i,2],[/executive|associate|analyst|accountant|officer|specialist/i,1],[/intern|trainee|graduate|clerk|accounts? assistant/i,0]];
@@ -226,7 +237,7 @@ function confetti(){const d=document.createElement('div');d.className='cf';d.inn
 
 // ---------- data cleaning (also used for synced data) ----------
 const KINDS=['me','goal','acca','skill','win','cpd','job','edu'],NUMF=['pct','score','lvl','tgt','hrs','updated','deleted','ver','cvw','cvl'],DATEF=['due','date'],MONF=['start','end'],
-STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,tmode:8,summary:1000};
+STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,tmode:8,exb:200,summary:1000};
 function clean(i){if(!i||typeof i!=='object'||Array.isArray(i))return null;if(typeof i.id!=='string'||!/^[\w.:-]{1,80}$/.test(i.id))return null;if(!KINDS.includes(i.kind))return null;const o={};
 for(const k of Object.keys(i)){const v=i[k];
 if(NUMF.includes(k)){if(v==='')o[k]='';else if(v!=null){const n=+v;if(isFinite(n))o[k]=n}}
@@ -238,7 +249,7 @@ o.updated=+o.updated||0;return o}
 
 // ---------- first run / old version import ----------
 function ensure(){const has=new Set(D.items.map(i=>i.id));
-PAPERS.forEach(([c,n,l])=>{if(!has.has('acca-'+c))D.items.push({id:'acca-'+c,kind:'acca',c,n,l,st:'Not started',date:'',score:'',updated:1})});
+[...PAPERS,...EXTRA].forEach(([c,n,l])=>{if(!has.has('acca-'+c))D.items.push({id:'acca-'+c,kind:'acca',c,n,l,st:'Not started',date:'',score:'',updated:1})});
 if(!has.has('me'))D.items.push({id:'me',kind:'me',name:'',email:'',phone:'',loc:'Malaysia',link:'',summary:'Group consolidation professional in healthcare, pursuing ACCA.',role:'Executive, Group Consolidation',target:'Assistant Manager, Group Reporting',cvw:1,cvl:0,updated:1})}
 function starter(){const n=Date.now();
 [['Group consolidation (IFRS 10)',3,5],['Intercompany eliminations',3,5],['Excel / Power Query',3,4],['Power BI',1,4],['Stakeholder communication',3,4],['MFRS / IFRS reporting',3,5]].forEach(([name,lvl,tgt],k)=>D.items.push({id:'sk-'+k,kind:'skill',name,lvl,tgt,updated:1}));
@@ -264,7 +275,7 @@ ensure();VER++;save()}
 function render(){const m=me(),a=accaPct();
 $('#nm').textContent=m.name||'NextRole';$('#av').textContent=(m.name||'N').trim().charAt(0).toUpperCase()||'N';
 $('#sub').textContent=m.target?'Next: '+m.target:m.role||'Set your role in Profile';
-$('#odo').innerHTML=a.done+'/13<small>ACCA</small>';
+$('#odo').innerHTML=a.done+'/'+a.total+'<small>ACCA</small>';
 document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
 $('#fab').hidden=tab==='profile'&&SEG.profile==='cv';
 $('#v').innerHTML=viewOf(tab)}
@@ -276,7 +287,7 @@ function fab(o){const f=$('#fab'),m=$('#fm'),on=o===undefined?m.hidden:!!o;m.hid
 function home(){const m=me(),a=accaPct(),G=live('goal'),og=G.filter(g=>+g.pct<100),gp=G.length?sum(G,'pct')/G.length:0,y=String(new Date().getFullYear()),
 C=live('cpd').filter(c=>(c.date||'').startsWith(y)),hrs=sum(C,'hrs'),W=live('win'),wy=W.filter(w=>(w.date||'').startsWith(y)).length,ne=nextExam(),
 S=live('skill'),atT=S.filter(s=>+s.lvl>=+s.tgt).length,gap=S.filter(s=>+s.tgt>+s.lvl).sort((x,z)=>(z.tgt-z.lvl)-(x.tgt-x.lvl)).slice(0,3),
-passed=live('acca').filter(p=>['Passed','Exempt'].includes(p.st)).sort((x,z)=>pOrd(x.c)-pOrd(z.c)),h=new Date().getHours(),
+passed=live('acca').filter(p=>okSt(p)&&(OLDC.has(p.c)||p.c==='SDS')).sort((x,z)=>pOrd(x.c)-pOrd(z.c)),h=new Date().getHours(),
 up=[...og.filter(g=>g.due&&dd(g.due)<=60).map(g=>({d:g.due,t:g.title,s:g.area,id:g.id,k:'goal'})),...live('acca').filter(p=>p.st==='Booked'&&p.date&&dd(p.date)>=0).map(p=>({d:p.date,t:p.c+' exam',s:p.n,id:p.id,k:'acca'}))].sort((x,z)=>x.d.localeCompare(z.d)).slice(0,5),
 lastWin=W.map(w=>w.date).sort().pop(),nudge=!lastWin||dd(lastWin)<-14;
 return `<p class="hi">${h<12?'Good morning':h<18?'Good afternoon':'Good evening'}${m.name?', <b>'+E(m.name.split(' ')[0])+'</b>':''}.</p>
@@ -298,16 +309,44 @@ return kpis([['Open',G.filter(g=>+g.pct<100).length],['Done',G.filter(g=>+g.pct>
 `<div class="fr">${['All',...AREAS].map(a=>`<span class="chip2${a===GF?' on':''}" onclick="GF='${a}';render()">${a}</span>`).join('')}</div>`+
 sh('In progress',o.length)+(o.length?'<div class="g2">'+o.map(goalCard).join('')+'</div>':'<p class="m">No open goals here. Tap + to add one.</p>')+(d.length?sh('Done',d.length)+'<div class="g2">'+d.map(goalCard).join('')+'</div>':'')}
 
-function accaTab(){const A=live('acca').sort((x,z)=>pOrd(x.c)-pOrd(z.c)),a=accaPct(),sat=A.filter(p=>['Passed','Failed'].includes(p.st)),pass=sat.filter(p=>p.st==='Passed'),sc=pass.filter(p=>p.score!==''&&p.score!=null&&+p.score>0),ne=nextExam();
-const lv=[...new Set(PAPERS.map(p=>p[2]))];
-return `<div class="c glow mt"><div class="hero">${ring(a.pct,a.done+'/13','papers')}<div style="min-width:0"><b style="font-size:18px">${a.done===13?'ACCA complete! 🎓':(13-a.done)+' paper'+(13-a.done===1?'':'s')+' to go'}</b>
+function setQv(x){D.cfg.qv=x===(today()>=TRANS?'new':'old')?'':x;save();render()}
+function prow(p,code,name,sub,tag,tc){const n=p&&p.date?dd(p.date):null;return `<div class="pc" onclick="openE('acca','${E(p.id)}')"><span class="code ${tc}">${E(code)}</span><div style="flex:1;min-width:0"><div>${E(name)}</div><div class="m">${[sub,p.st==='Booked'&&p.date?fd(p.date)+' · '+inD(n):p.date?fd(p.date):'',p.score!==''&&p.score!=null&&+p.score>0?p.score+' marks':''].filter(Boolean).join(' · ')}</div></div><span class="tag ${tc}">${E(tag)}</span></div>`}
+function transTips(){const t=[],ok=c=>okSt(pc(c)),AS=['LW','PM','TX','FR','AA','FM'],left=AS.filter(c=>!ok(c)),opts=['AFM','APM','ATX','AAA'].filter(ok).length;
+if(!ok('BT'))t.push('BT is retired. Without it you take the <b>Responsible Business Management</b> module instead.');
+if(!ok('LW'))t.push('Pass <b>LW</b> by June 2027, or sit <b>K3 Business Law</b> before or alongside your first Expertise exam.');
+if(left.length)t.push('Applied Skills not finished ('+left.join(', ')+'). Unless all are done by June 2027 you also need the <b>Digital Tech &amp; Innovation</b> module (about 100 hours).');
+if(opts<2)t.push('Only <b>1 option</b> is needed after the change'+(opts?'. Your passed option already covers it.':'. Two are needed if you finish before.'));
+if(!ok('EPSM'))t.push('Finishing <b>EPSM</b> before the change gives credit for the Ethical, Sustainable Leadership module.');
+return t}
+function accaTab(){const v=qv(),a=accaPct(v),A=live('acca'),sat=A.filter(p=>['Passed','Failed'].includes(p.st)),pass=sat.filter(p=>p.st==='Passed'),ex=A.filter(p=>p.st==='Exempt'&&p.c!=='EPSM'),sc=pass.filter(p=>p.score!==''&&p.score!=null&&+p.score>0),ne=nextExam(),
+cols=['#22e3ff','#4ade80','#fbbf24','#a78bfa'],left=a.total-a.done,
+lv=v==='new'?[...new Set(NQ.map(q=>q[2]))]:[...new Set(PAPERS.map(p=>p[2]))],
+grp=l=>v==='new'?NQ.filter(q=>q[2]===l).map(q=>({p:pc(q[3]),code:q[0],name:q[1],sub:q[3]==='SDS'?'New option':'Was '+q[3]})):PAPERS.filter(x=>x[2]===l).map(x=>({p:pc(x[0]),code:x[0],name:x[1],sub:''})),
+need=l=>l.startsWith('Options')?(v==='new'?1:2):grp(l).length,dn=l=>Math.min(need(l),grp(l).filter(r=>okSt(r.p)).length),
+dl=dd(TRANS),tips=dl>0?transTips():[];
+let h=`<div class="seg"><button class="${v==='old'?'on':''}" onclick="setQv('old')">Current · 13 papers</button><button class="${v==='new'?'on':''}" onclick="setQv('new')">From Sep 2027 · 11</button></div>
+<div class="c glow"><div class="hero">${ring(a.pct,a.done+'/'+a.total,'papers')}<div style="min-width:0"><b style="font-size:18px">${left?left+' paper'+(left===1?'':'s')+' to go':'ACCA exams complete! 🎓'}</b>
 <div class="m mt">${ne?'Next: <b style="color:var(--tx)">'+E(ne.c)+'</b> on '+fd(ne.date)+' ('+inD(dd(ne.date))+')':'No exam booked. Tap a paper to set the date.'}</div></div></div>
-<div class="sbar">${lv.map((l,k)=>{const P0=A.filter(p=>p.l===l),need=l.startsWith('Options')?2:P0.length,dn=Math.min(need,P0.filter(p=>['Passed','Exempt'].includes(p.st)).length);return `<i style="width:${dn/13*100}%;background:${['#22e3ff','#4ade80','#fbbf24','#a78bfa'][k]}"></i>`}).join('')}</div>
-<div class="m">${lv.map((l,k)=>`<span style="color:${['#22e3ff','#4ade80','#fbbf24','#a78bfa'][k]}">■</span> ${l.replace(' – pick 2','')}`).join(' &nbsp; ')}</div></div>
-${kpis([['Passed',pass.length,'s0'],['Pass rate',sat.length?Math.round(pass.length/sat.length*100)+'%':'—'],['Avg score',sc.length?Math.round(sum(sc,'score')/sc.length):'—']])}
-${lv.map(l=>{const P0=A.filter(p=>p.l===l),need=l.startsWith('Options')?2:P0.length,dn=Math.min(need,P0.filter(p=>['Passed','Exempt'].includes(p.st)).length);
-return '<section>'+sh(l,dn+'/'+need)+'<div class="c">'+P0.map(p=>{const n=p.date?dd(p.date):null;return `<div class="pc" onclick="openE('acca','${E(p.id)}')"><span class="code ${stc(p.st)}">${E(p.c)}</span><div style="flex:1;min-width:0"><div>${E(p.n)}</div><div class="m">${p.st==='Booked'&&p.date?fd(p.date)+' · '+inD(n):p.date?fd(p.date):''}${p.score!==''&&p.score!=null&&+p.score>0?' · '+p.score+' marks':''}</div></div><span class="tag ${stc(p.st)}">${E(p.st)}</span></div>`}).join('')+'</div></section>'}).join('')}
-<p class="m mt">Pass mark is 50. You need 13 papers: 9 Applied, 2 Strategic and 2 of the 4 options.</p>`}
+<div class="sbar">${lv.map((l,k)=>`<i style="width:${dn(l)/a.total*100}%;background:${cols[k]}"></i>`).join('')}</div>
+<div class="m">${lv.map((l,k)=>`<span style="color:${cols[k]}">■</span> ${l.replace(/ – pick \d/,'')}`).join(' &nbsp; ')}</div>
+<div class="btns mt"><button class="btn sm" onclick="openEx()">🎓 Set exemptions</button></div></div>
+${kpis([['Passed',pass.length,'s0'],['Exempt',ex.length,'s5'],['Avg score',sc.length?Math.round(sum(sc,'score')/sc.length):'—']])}`;
+if(tips.length)h+=`<div class="c" style="border-color:var(--amb)"><div class="r"><b>Syllabus change: September 2027</b><span class="tag s1">${Math.ceil(dl/7)} weeks</span></div><div class="m">June 2027 is the last sitting of the current Applied Skills and Strategic exams. Everything you pass or are exempt from carries over as credit. For you:</div><ul class="m" style="margin:8px 0 0;padding-left:18px">${tips.map(t=>`<li style="margin:4px 0">${t}</li>`).join('')}</ul></div>`;
+h+=lv.map(l=>'<section>'+sh(l,dn(l)+'/'+need(l))+'<div class="c">'+grp(l).map(r=>{const p=r.p;if(!p)return '';const ok=okSt(p),tg=v==='new'&&ok?'Credit':p.st,tc=v==='new'&&ok?'s0':stc(p.st);return prow(p,r.code,r.name,r.sub,tg,tc)}).join('')+'</div></section>').join('');
+if(v==='new'){const M=[['DTI','Digital Tech & Innovation'],['RBM','Responsible Business Management'],['ESL','Ethical, Sustainable Leadership']];
+h+='<section>'+sh('Modules')+'<div class="c">'+M.map(([c,n])=>{const p=pc(c);if(!p)return '';const src=modSrc(c),ok=src||okSt(p);return prow(p,c,n,src?'Credit from '+src:c==='DTI'?'Not needed if all Applied Skills are done by June 2027':'',ok?'Credit':p.st,ok?'s0':stc(p.st))}).join('')+'</div></section>';
+h+=`<p class="m mt">From September 2027 you need 11 exams: K1–K3, E1–E5, S1, S2 and 1 option, plus the modules. Credit is worked out from your current passes and exemptions. Check your own position with ACCA's transition tool.</p>`}
+else{const p=pc('EPSM');h+='<section>'+sh('Module')+'<div class="c">'+(p?prow(p,'EPSM','Ethics & Professional Skills','Needed for membership',p.st,stc(p.st)):'')+'</div></section>'+
+`<p class="m mt">Pass mark is 50. You need 13 papers: 9 Applied, 2 Strategic and 2 of the 4 options, plus EPSM.</p>`}
+return h}
+function openEx(){const m=me(),d=$('#st');$('#stc').innerHTML=`<h2>Exemptions</h2><p class="m">ACCA can exempt you from Applied Knowledge and Applied Skills papers based on your degree or another qualification. Tick the ones on your exemption letter or in myACCA. Strategic Professional papers can't be exempted.</p>
+<label class="f"><span>Exempted because of</span><input id="x_b" value="${E(m.exb||'')}" placeholder="e.g. Bachelor of Accounting (Hons)" autocomplete="off"></label>
+${EXP.map(c=>{const p=pc(c);if(!p)return '';return `<label class="switch"><span><b class="code s5" style="display:inline-block;margin-right:8px">${c}</b>${E(p.n)}${p.st==='Passed'?' <span class="m">(passed)</span>':''}</span><input type="checkbox" id="x_${c}" ${p.st==='Exempt'?'checked':''} ${p.st==='Passed'?'disabled':''}></label>`}).join('')}
+<p class="m">From September 2027 these carry over as credit, for example FA → K1 and FR → E2.</p>
+<div class="row mt"><button type="button" class="g" onclick="$('#st').close()">Cancel</button><button type="button" onclick="saveEx()">Save</button></div>`;if(!d.open){d.showModal();try{history.pushState(null,'','#'+SL[tab])}catch(e){}}d.scrollTop=0}
+function saveEx(){let n=0;const now=Date.now();EXP.forEach(c=>{const p=pc(c),el=$('#x_'+c);if(!p||!el||el.disabled)return;const want=el.checked;
+if(want&&p.st!=='Exempt'){p.st='Exempt';p.date='';p.score='';p.updated=now}else if(!want&&p.st==='Exempt'){p.st='Not started';p.updated=now}if(want)n++});
+const m=get('me'),b=$('#x_b').value.trim();if(m&&(m.exb||'')!==b){m.exb=b;m.updated=now}$('#st').close();commit();toast(n?n+' exemption'+(n>1?'s':'')+' saved':'Exemptions cleared')}
 
 function tline(a,row,head){const g={};a.forEach(i=>{const k=(i.date||'').slice(0,7)||'—';(g[k]=g[k]||[]).push(i)});
 return '<div class="tl">'+Object.keys(g).sort().reverse().map(k=>`<div class="mh"><div class="r"><span class="m">${k==='—'?'NO DATE':new Date(k+'-01T00:00').toLocaleString('en-GB',{month:'long',year:'numeric'}).toUpperCase()}</span><b>${head(g[k])}</b></div></div>`+g[k].map(row).join('')).join('')+'</div>'}
@@ -337,7 +376,7 @@ return h}
 function lvl(id,n){const s=get(id);if(!s)return;const hit=n>=+s.tgt&&+s.lvl<+s.tgt;s.lvl=n;s.updated=Date.now();commit();buzz(8);if(hit){confetti();toast('Target reached: '+s.name)}}
 function setMe(k,v){const m=get('me');m[k]=v;m.updated=Date.now();commit()}
 
-function cvHTML(){const m=me(),a=accaPct(),passed=live('acca').filter(x=>['Passed','Exempt'].includes(x.st)).sort((x,z)=>pOrd(x.c)-pOrd(z.c)).map(x=>x.c),
+function cvHTML(){const m=me(),a=accaPct(),passed=live('acca').filter(x=>okSt(x)&&(OLDC.has(x.c)||x.c==='SDS')).sort((x,z)=>pOrd(x.c)-pOrd(z.c)).map(x=>x.c),
 J=live('job').sort((x,y)=>(y.start||'').localeCompare(x.start||'')),sk=live('skill').filter(s=>+s.lvl>=3).sort((x,y)=>y.lvl-x.lvl).map(s=>E(s.name)),
 W=live('win').sort((x,y)=>(y.date||'').localeCompare(x.date||'')).slice(0,5),C=live('cpd').sort((x,y)=>(y.date||'').localeCompare(x.date||'')).slice(0,5);
 return `<div id="cv"><h1>${E(m.name||'Your name')}</h1><div class="cvc">${[m.loc,m.email,m.phone,m.link].filter(Boolean).map(E).join(' · ')}</div>
@@ -345,7 +384,7 @@ ${m.summary?`<h4>Profile</h4><p>${E(m.summary)}</p>`:''}
 ${J.length?`<h4>Experience</h4>${J.map(j=>`<div class="cvi"><div class="cvr"><b>${E(j.title)}</b><span>${mon(j.start)} – ${mon(j.end)||'Present'}</span></div><div class="cvs">${E(j.co)}${j.loc?', '+E(j.loc):''}</div>${j.pts?`<ul>${j.pts.split('\n').map(p=>p.trim()).filter(Boolean).map(p=>`<li>${E(p)}</li>`).join('')}</ul>`:''}</div>`).join('')}`:''}
 ${m.cvw&&W.length?`<h4>Key achievements</h4><ul>${W.map(w=>`<li>${E(w.title)}${w.impact?' — '+E(w.impact):''}</li>`).join('')}</ul>`:''}
 <h4>Education &amp; qualifications</h4>
-<div class="cvi"><div class="cvr"><b>ACCA ${a.done===13?'(all papers completed)':'(in progress)'}</b><span>${a.done}/13 papers</span></div>${passed.length?`<div class="cvs">Completed: ${passed.join(', ')}</div>`:''}</div>
+<div class="cvi"><div class="cvr"><b>ACCA ${a.done===a.total?'(all exams completed)':'(in progress)'}</b><span>${a.done}/${a.total} exams</span></div>${passed.length?`<div class="cvs">Completed: ${passed.join(', ')}</div>`:''}</div>
 ${live('edu').sort((x,y)=>(y.end||'9').localeCompare(x.end||'9')).map(e=>`<div class="cvi"><div class="cvr"><b>${E(e.qual)}</b><span>${mon(e.start)} – ${mon(e.end)||'Present'}</span></div><div class="cvs">${E(e.inst)}${e.grade?' · '+E(e.grade):''}</div></div>`).join('')}
 ${sk.length?`<h4>Skills</h4><p>${sk.join(' · ')}</p>`:''}
 ${m.cvl&&C.length?`<h4>Training</h4><ul>${C.map(c=>`<li>${E(c.title)} (${num(c.hrs)} h)</li>`).join('')}</ul>`:''}</div>`}
@@ -379,7 +418,9 @@ if(editK==='acca'&&it.score!==''&&(it.score<0||it.score>100))return alert('Score
 if(editK==='job'&&it.start&&it.end&&it.end<it.start)return alert('End month is before the start month.');
 if(editK==='me'&&it.tmode==='auto'){const nx=autoNext(it.role);if(nx)it.target=nx}
 it.updated=now;$('#ed').close();commit();
+const nq=editK==='acca'&&it.st==='Booked'&&it.date>LASTOLD&&NQ.find(q=>q[3]===it.c&&q[0]!==it.c);
 if(editK==='acca'&&it.st==='Passed'&&was.st!=='Passed'){confetti();buzz([10,40,10]);toast(it.c+' passed! 🎉')}
+else if(nq)toast('Saved. After June 2027 you sit this as '+nq[0]+' '+nq[1].replace(/ \(was.*\)/,''))
 else if(editK==='goal'&&+it.pct>=100&&+(was.pct||0)<100){confetti();toast('Goal done! 🎉')}
 else toast(isNew?t.charAt(0).toUpperCase()+t.slice(1)+' saved':'Saved')};
 function meWire(){const md=$('#e_tmode'),r=$('#e_role'),t=$('#e_target'),pv=$('#tPrev'),dl=$('#rolesDL');let mine=t.value;
