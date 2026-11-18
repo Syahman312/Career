@@ -129,6 +129,8 @@ label.f{display:block;margin:12px 0 0}label.f>span{display:block;font-size:12.5p
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,a,input,select,textarea,label,.cl,.pc,.ti,.chip2{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 nav .brand,nav kbd,nav .side-extra{display:none}
+.fileb{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--c2);border:1px solid var(--bd2);border-radius:12px;padding:10px 12px;margin-bottom:8px;overflow-wrap:anywhere}
+input[type=file]{padding:10px;font-size:14px!important}
 .pw{position:relative}.pw input{padding-right:52px}
 .pw .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:40px;padding:0;display:grid;place-items:center;background:none;border:0;border-radius:10px;color:var(--mu)}
 .pw .eye svg{width:20px;height:20px}.pw .eye[aria-pressed=true]{color:var(--cy)}.pw .eye:active{transform:translateY(-50%) scale(.94)}
@@ -175,7 +177,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.18d',CODE_V=1;
+const APP_V='2026.11.18e',CODE_V=2;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SL={home:'home',goals:'goals',acca:'acca',journal:'journal',profile:'profile'};
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv'},LOGALL=0;
@@ -249,7 +251,7 @@ const fH=c=>{const x=FLOW&&FLOW.P[c];return x&&(x.mins||x.tgt)?'📚 '+num(x.min
 const flowYrH=y=>FLOW&&D.cfg.flowHrs!==0?(FLOW.yr[y]||0)/60:0;
 function flowDiffs(){if(!FLOW)return[];const ign=+D.cfg.flowIgn||0,o=[];Object.entries(FLOW.P).forEach(([c,x])=>{const it=pc(c);if(!it||x.up<=Math.max(+it.updated||0,ign))return;const ch={};
 if(x.st&&x.st!==it.st&&!(x.st==='Not started'&&okSt(it)))ch.st=x.st;if(x.exam&&x.exam!==it.date)ch.date=x.exam;if(x.score!==''&&+x.score!==+it.score)ch.score=x.score;if(Object.keys(ch).length)o.push([c,ch])});return o}
-function flowApply(){const now=Date.now(),L=flowDiffs();L.forEach(([c,ch])=>{const it=pc(c);Object.assign(it,ch);it.updated=now});commit();toast('Updated '+L.length+' paper'+(L.length>1?'s':'')+' from Flow')}
+function flowApply(){const now=Date.now(),L=flowDiffs();L.forEach(([c,ch])=>{const it=pc(c);Object.assign(it,ch);it.updated=now;autoSit(it)});commit();toast('Updated '+L.length+' paper'+(L.length>1?'s':'')+' from Flow')}
 function flowIgnore(){D.cfg.flowIgn=Date.now();save();render()}
 const modSrc=c=>c==='RBM'?(okSt(pc('BT'))?'BT':''):c==='ESL'?(okSt(pc('EPSM'))?'EPSM':''):c==='DTI'?(['LW','PM','TX','FR','AA','FM'].every(x=>okSt(pc(x)))?'all Applied Skills':''):'';
 // ---------- next role: choose yourself or automatic ----------
@@ -268,8 +270,8 @@ function buzz(n){try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}}
 function confetti(){const d=document.createElement('div');d.className='cf';d.innerHTML=Array.from({length:60},()=>`<i style="left:${Math.random()*100}%;background:${['#22e3ff','#fbbf24','#4ade80','#a78bfa','#f87171'][Math.floor(Math.random()*5)]};animation-duration:${1.6+Math.random()*1.6}s;animation-delay:${Math.random()*.4}s"></i>`).join('');document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}
 
 // ---------- data cleaning (also used for synced data) ----------
-const KINDS=['me','goal','acca','skill','win','cpd','job','edu'],NUMF=['pct','score','lvl','tgt','hrs','updated','deleted','ver','cvw','cvl'],DATEF=['due','date'],MONF=['start','end'],
-STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,tmode:8,exb:200,summary:1000};
+const KINDS=['me','goal','acca','skill','win','cpd','job','edu','sit'],NUMF=['pct','score','lvl','tgt','hrs','updated','deleted','ver','cvw','cvl'],DATEF=['due','date'],MONF=['start','end'],
+STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,tmode:8,exb:200,res:10,fid:80,fn:120,mime:60,summary:1000};
 function clean(i){if(!i||typeof i!=='object'||Array.isArray(i))return null;if(typeof i.id!=='string'||!/^[\w.:-]{1,80}$/.test(i.id))return null;if(!KINDS.includes(i.kind))return null;const o={};
 for(const k of Object.keys(i)){const v=i[k];
 if(NUMF.includes(k)){if(v==='')o[k]='';else if(v!=null){const n=+v;if(isFinite(n))o[k]=n}}
@@ -281,6 +283,7 @@ o.updated=+o.updated||0;return o}
 
 // ---------- first run / old version import ----------
 function ensure(){const has=new Set(D.items.map(i=>i.id));
+live('acca').forEach(p=>autoSit(p,1));
 [...PAPERS,...EXTRA].forEach(([c,n,l])=>{if(!has.has('acca-'+c))D.items.push({id:'acca-'+c,kind:'acca',c,n,l,st:'Not started',date:'',score:'',updated:1})});
 if(!has.has('me'))D.items.push({id:'me',kind:'me',name:'',email:'',phone:'',loc:'Malaysia',link:'',summary:'Group consolidation professional in healthcare, pursuing ACCA.',role:'Executive, Group Consolidation',target:'Assistant Manager, Group Reporting',cvw:1,cvl:0,updated:1})}
 function starter(){const n=Date.now();
@@ -353,7 +356,7 @@ return t}
 function accaTab(){const v=qv(),a=accaPct(v),A=live('acca'),sat=A.filter(p=>['Passed','Failed'].includes(p.st)),pass=sat.filter(p=>p.st==='Passed'),ex=A.filter(p=>p.st==='Exempt'&&p.c!=='EPSM'),sc=pass.filter(p=>p.score!==''&&p.score!=null&&+p.score>0),ne=nextExam(),
 cols=['#22e3ff','#4ade80','#fbbf24','#a78bfa'],left=a.total-a.done,
 lv=v==='new'?[...new Set(NQ.map(q=>q[2]))]:[...new Set(PAPERS.map(p=>p[2]))],
-grp=l=>v==='new'?NQ.filter(q=>q[2]===l).map(q=>({p:pc(q[3]),code:q[0],name:q[1],sub:[q[3]==='SDS'?'New option':'Was '+q[3],okSt(pc(q[3]))?'':fH(q[3])].filter(Boolean).join(' · ')})):PAPERS.filter(x=>x[2]===l).map(x=>({p:pc(x[0]),code:x[0],name:x[1],sub:okSt(pc(x[0]))?'':fH(x[0])})),
+grp=l=>v==='new'?NQ.filter(q=>q[2]===l).map(q=>({p:pc(q[3]),code:q[0],name:q[1],sub:[q[3]==='SDS'?'New option':'Was '+q[3],atT(q[3]),okSt(pc(q[3]))?'':fH(q[3])].filter(Boolean).join(' · ')})):PAPERS.filter(x=>x[2]===l).map(x=>({p:pc(x[0]),code:x[0],name:x[1],sub:[atT(x[0]),okSt(pc(x[0]))?'':fH(x[0])].filter(Boolean).join(' · ')})),
 need=l=>l.startsWith('Options')?(v==='new'?1:2):grp(l).length,dn=l=>Math.min(need(l),grp(l).filter(r=>okSt(r.p)).length),
 dl=dd(TRANS),tips=dl>0?transTips():[];
 let h=`<div class="seg"><button class="${v==='old'?'on':''}" onclick="setQv('old')">Current · 13 papers</button><button class="${v==='new'?'on':''}" onclick="setQv('new')">From Sep 2027 · 11</button></div>
@@ -432,30 +435,65 @@ cpd:['learning',[['date','Date','date',{req:1}],['title','Course, book or webina
 job:['job',[['title','Job title','text',{req:1}],['co','Company','text',{req:1}],['loc','Location','text'],['start','Start','month'],['end','End (blank = present)','month'],['pts','Key points, one per line','textarea',{rows:5}]]],
 edu:['education',[['inst','Institution','text',{req:1}],['qual','Qualification','text',{ph:'e.g. Bachelor of Accounting'}],['grade','Grade / CGPA','text'],['start','Start','month'],['end','End','month']]],
 skill:['skill',[['name','Skill','text',{req:1}],['lvl','Current level','select',[1,2,3,4,5]],['tgt','Target level','select',[1,2,3,4,5]]]],
+sit:['attempt',[['date','Exam date','date',{req:1}],['res','Result','select',['Waiting','Passed','Failed','Absent']],['score','Marks (out of 100)','number',{step:'1'}],['file','Result slip (PDF or photo)','file']]],
 acca:['paper',[['st','Status','select',ST],['date','Exam date','date'],['score','Score (out of 100)','number',{step:'1'}]]],
 me:['details',[['name','Full name','text'],['role','Current role','text',{ph:'e.g. Executive, Group Consolidation'}],['tmode','How to set your next role','select',[['manual','I choose it myself'],['auto','Work it out from my current role']]],['target','Next role','text',{list:'rolesDL',after:'<p class="m" id="tPrev" style="margin:6px 0 0"></p><datalist id="rolesDL"></datalist>'}],['email','Email','email'],['phone','Phone','tel'],['loc','Location','text'],['link','LinkedIn URL','url'],['summary','Profile summary (2–3 lines)','textarea',{rows:4}]]]};
-const DEF={goal:()=>({area:'Work',pct:0}),win:()=>({date:today()}),cpd:()=>({date:today(),type:'Course',hrs:1}),skill:()=>({lvl:1,tgt:4})};
+let SITC='';const DEF={sit:()=>({c:SITC,date:today(),res:'Waiting'}),goal:()=>({area:'Work',pct:0}),win:()=>({date:today()}),cpd:()=>({date:today(),type:'Course',hrs:1}),skill:()=>({lvl:1,tgt:4})};
 function openE(k,id){editK=k;editId=id||null;const it=id?get(id):(DEF[k]?DEF[k]():{});if(!it)return;const[t,F]=FORMS[k];
-$('#et').textContent=k==='acca'?it.c+' · '+it.n:k==='me'?'Your details':(id?'Edit ':'Add ')+t;
+$('#et').textContent=k==='sit'?(id?'Edit':'Add')+' attempt · '+it.c:k==='acca'?it.c+' · '+it.n:k==='me'?'Your details':(id?'Edit ':'Add ')+t;
 $('#eb').innerHTML=F.map(([f,l,ty,o])=>{o=o||{};const v=it[f]??'',a=`id="e_${f}" name="${f}"${o.req?' required':''}${o.ph?` placeholder="${E(o.ph)}"`:''}`;
 if(ty==='select')return `<label class="f"><span>${l}</span><select ${a}>${o.map(x=>{const[ov,ol]=Array.isArray(x)?x:[x,x];return `<option value="${E(ov)}"${String(ov)===String(v)?' selected':''}>${E(ol)}</option>`}).join('')}</select></label>`;
 if(ty==='textarea')return `<label class="f"><span>${l}</span><textarea ${a} rows="${o.rows||3}">${E(v)}</textarea></label>`;
+if(ty==='file')return `<label class="f"><span>${l}</span>${it.fn?`<div class="fileb"><span>📄 ${E(it.fn)}<br><small class="m">${it.fid?'Saved in Google Drive':'On this device'+(D.cfg.url?' · uploads on next sync':'')}</small></span><div class="btns"><button type="button" class="btn sm" onclick="viewFile('${E(it.id)}')">View</button>${it.fid?`<a class="btn sm" href="https://drive.google.com/file/d/${encodeURIComponent(it.fid)}/view" target="_blank" rel="noopener" style="text-decoration:none">Drive</a>`:''}<button type="button" class="btn sm" onclick="rmFile('${E(it.id)}')">Remove</button></div></div>`:''}<input type="file" id="e_file" accept="application/pdf,image/*"></label><p class="m" style="margin:4px 0 0">${it.fn?'Pick a file to replace it. ':''}PDF or photo, up to 10 MB. Kept on this device${D.cfg.url?((D.cfg.sv||0)>=2?' and in your Google Drive (NextRole Results folder).':'. Update Code.gs to version 2 to also keep it in Google Drive.'):'. Connect Google in Settings to keep a copy in Drive.'}</p>`;
 if(ty==='check')return `<label class="switch"><span>${l}</span><input type="checkbox" ${a}${v?' checked':''}></label>`;
 if(ty==='range')return `<label class="f"><span>${l}</span><input type="range" min="0" max="100" step="5" ${a} value="${+v||0}" oninput="$('#rv').textContent=this.value+'%'"></label><div id="rv">${+v||0}%</div>`;
-return `<label class="f"><span>${l}</span><input type="${ty}" ${a} value="${E(v)}"${ty==='number'?` inputmode="decimal" min="0" step="${o.step||'any'}"`:''}${ty==='text'?' autocomplete="off"':''}${o.list?` list="${o.list}"`:''}></label>${o.after||''}`}).join('');
-$('#ex').hidden=!id||k==='acca'||k==='me';if(k==='me')meWire();$('#ed').showModal();try{history.pushState(null,'','#'+SL[tab])}catch(e){}}
+return `<label class="f"><span>${l}</span><input type="${ty}" ${a} value="${E(v)}"${ty==='number'?` inputmode="decimal" min="0" step="${o.step||'any'}"`:''}${ty==='text'?' autocomplete="off"':''}${o.list?` list="${o.list}"`:''}></label>${o.after||''}`}).join('')+(k==='acca'?attHTML(it.c):'');
+$('#ex').hidden=!id||k==='acca'||k==='me';if(k==='me')meWire();if(!$('#ed').open)$('#ed').showModal();$('#ed').scrollTop=0;try{history.pushState(null,'','#'+SL[tab])}catch(e){}}
 $('#ef').onsubmit=e=>{e.preventDefault();const[t,F]=FORMS[editK],now=Date.now();let it=editId&&get(editId),isNew=!it;
-if(!it){it={id:uid(),kind:editK};D.items.push(it)}const was={...it};
-F.forEach(([f,,ty])=>{const el=$('#e_'+f);let v=ty==='check'?(el.checked?1:0):el.value.trim();if(ty==='number'||ty==='range'||f==='lvl'||f==='tgt')v=v===''?'':+v;it[f]=v});
+const nf=editK==='sit'&&$('#e_file')&&$('#e_file').files[0];if(nf&&nf.size>FMAX)return alert('That file is larger than 10 MB. Save a smaller PDF or take a photo instead.');
+const sc=$('#e_score');if(sc&&sc.value!==''&&(+sc.value<0||+sc.value>100))return alert('Marks must be between 0 and 100.');
+if(!it){it={id:uid(),kind:editK};if(editK==='sit')it.c=SITC;D.items.push(it)}const was={...it};
+F.forEach(([f,,ty])=>{if(ty==='file')return;const el=$('#e_'+f);let v=ty==='check'?(el.checked?1:0):el.value.trim();if(ty==='number'||ty==='range'||f==='lvl'||f==='tgt')v=v===''?'':+v;it[f]=v});
 if(editK==='acca'&&it.score!==''&&(it.score<0||it.score>100))return alert('Score must be between 0 and 100.');
 if(editK==='job'&&it.start&&it.end&&it.end<it.start)return alert('End month is before the start month.');
 if(editK==='me'&&it.tmode==='auto'){const nx=autoNext(it.role);if(nx)it.target=nx}
-it.updated=now;$('#ed').close();commit();
+it.updated=now;$('#ed').close();
+if(editK==='acca')autoSit(it);let np=0;if(editK==='sit'){const w0=pc(it.c)&&pc(it.c).st;sitApply(it.c);np=pc(it.c)&&pc(it.c).st==='Passed'&&w0!=='Passed'}
+commit();if(nf)attachFile(it,nf);
 const nq=editK==='acca'&&it.st==='Booked'&&it.date>LASTOLD&&NQ.find(q=>q[3]===it.c&&q[0]!==it.c);
-if(editK==='acca'&&it.st==='Passed'&&was.st!=='Passed'){confetti();buzz([10,40,10]);toast(it.c+' passed! 🎉')}
+if((editK==='acca'&&it.st==='Passed'&&was.st!=='Passed')||np){confetti();buzz([10,40,10]);toast(it.c+' passed! 🎉')}
 else if(nq)toast('Saved. After June 2027 you sit this as '+nq[0]+' '+nq[1].replace(/ \(was.*\)/,''))
 else if(editK==='goal'&&+it.pct>=100&&+(was.pct||0)<100){confetti();toast('Goal done! 🎉')}
 else toast(isNew?t.charAt(0).toUpperCase()+t.slice(1)+' saved':'Saved')};
+// ---------- exam attempts and result slips ----------
+const FMAX=10*1024*1024,sits=c=>live('sit').filter(x=>x.c===c).sort((a,b)=>(a.date||'').localeCompare(b.date||'')),attN=c=>sits(c).filter(x=>x.res!=='Absent').length,
+atT=c=>{const n=attN(c);return n?n+' attempt'+(n>1?'s':''):''},resc=r=>({Passed:'s0',Failed:'s2',Waiting:'s1'}[r]||'s4'),ordn=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
+let UPB=0;
+function openSit(c,id){SITC=c;openE('sit',id)}
+function attHTML(c){const S=sits(c);let n=0;return `<div class="sh"><span>Attempts</span><span>${attN(c)}</span></div>`+(S.length?'<div class="c" style="padding:4px 12px">'+S.map(x=>{const k=x.res==='Absent'?'':ordn(++n)+' attempt';return `<div class="pc" onclick="openSit('${E(c)}','${E(x.id)}')"><div style="flex:1;min-width:0"><b>${fd(x.date)||'No date'}</b><div class="m">${[k,x.score!==''&&x.score!=null?x.score+' marks':'',x.fn?'📄 slip':''].filter(Boolean).join(' · ')}</div></div><span class="tag ${resc(x.res)}">${E(x.res||'')}</span></div>`}).join('')+'</div>':'<p class="m">No attempts yet. Add each sitting here, with your result slip.</p>')+
+`<button type="button" class="btn sm" style="margin-top:6px" onclick="openSit('${E(c)}')">+ Add attempt or result slip</button>`}
+// keep an attempt for every pass/fail with a date (also used for older records)
+function autoSit(p,up){if(!p||!['Passed','Failed'].includes(p.st)||!p.date)return;const id='sit-'+p.c+'-'+p.date,x=get(id);
+if(!x){if(!sits(p.c).some(s=>s.date===p.date))D.items.push({id,kind:'sit',c:p.c,date:p.date,res:p.st,score:p.score??'',updated:up||Date.now()})}
+else if(!x.deleted&&(x.res!==p.st||(p.score!==''&&+x.score!==+p.score))){x.res=p.st;if(p.score!=='')x.score=p.score;x.updated=Date.now()}}
+// the paper follows its latest pass/fail, unless it has been re-booked for a later date
+function sitApply(c){const p=pc(c),L=sits(c).filter(x=>['Passed','Failed'].includes(x.res)).pop();if(!p||!L||p.st==='Exempt')return;if(p.st==='Booked'&&p.date&&p.date>L.date)return;
+if(p.st!==L.res||p.date!==L.date||String(p.score??'')!==String(L.score??'')){p.st=L.res;p.date=L.date;p.score=L.score??'';p.updated=Date.now()}}
+const b64of=b=>new Promise((r,j)=>{const f=new FileReader();f.onload=()=>r(String(f.result).split(',')[1]||'');f.onerror=()=>j(f.error);f.readAsDataURL(b)});
+async function attachFile(it,f){const old=it.fid;try{await kv('put','f:'+it.id,{name:f.name,type:f.type,blob:f})}catch(e){logE('file',e);return toast('Could not save the file on this device')}
+it.fn=String(f.name||'result').slice(0,120);it.mime=f.type||'';it.fid='';it.updated=Date.now();commit();toast('Result slip saved');
+if(old&&D.cfg.url)api({action:'delfile',fid:old}).catch(e=>logE('file',e));upFiles()}
+async function upFiles(){const c=D.cfg;if(!c.url||(c.sv||0)<2||UPB)return;UPB=1;let n=0;
+try{for(const x of live('sit').filter(x=>x.fn&&!x.fid)){const r=await kv('get','f:'+x.id);if(!r||!r.blob)continue;
+const j=await api({action:'upload',name:x.c+' '+(x.date||'')+' '+r.name,mime:r.type||'application/pdf',data:await b64of(r.blob)},120000);if(j.fid){x.fid=j.fid;x.updated=Date.now();n++}}}
+catch(e){logE('upload',e)}finally{UPB=0;if(n){commit();toast(n+' result slip'+(n>1?'s':'')+' saved to Drive')}}}
+async function viewFile(id){const x=get(id);if(!x)return;let r=null;try{r=await kv('get','f:'+id)}catch(e){}
+if(!(r&&r.blob)&&x.fid){toast('Opening from Google Drive…');try{const j=await api({action:'getfile',fid:x.fid},120000),bin=atob(j.data),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+r={name:x.fn,type:j.mime||x.mime,blob:new Blob([u],{type:j.mime||x.mime||'application/pdf'})};kv('put','f:'+id,r).catch(()=>{})}catch(e){logE('file',e);return toast('Could not open it from Drive: '+e.message)}}
+if(!(r&&r.blob))return toast(x.fid?'Could not open the file':'This slip is on another device and has not reached Drive yet');
+const url=URL.createObjectURL(r.blob),a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),6e4)}
+function rmFile(id){const x=get(id);if(!x||!confirm('Remove the result slip from this attempt?'))return;const fid=x.fid;x.fn='';x.fid='';x.mime='';x.updated=Date.now();kv('put','f:'+id,null).catch(()=>{});commit();
+if(fid&&D.cfg.url)api({action:'delfile',fid}).catch(e=>logE('file',e));openSit(x.c,id);toast('Result slip removed')}
 function meWire(){const md=$('#e_tmode'),r=$('#e_role'),t=$('#e_target'),pv=$('#tPrev'),dl=$('#rolesDL');let mine=t.value;
 const up=()=>{const a=md.value==='auto',nx=autoNext(r.value),i=roleLvl(r.value),fn=roleFn(r.value),pa=rolePath(r.value);
 dl.innerHTML=LAD.slice(Math.max(0,i+1)).flatMap((x,k)=>{const j=Math.max(0,i+1)+k;return fn&&j<6?[withFn(j,fn),x]:[x]}).map(x=>`<option value="${E(x)}">`).join('');
@@ -463,7 +501,7 @@ t.readOnly=a;t.style.opacity=a?.6:1;if(a)t.value=nx;else if(t.value===nx&&mine!=
 pv.innerHTML=a?(nx?'NextRole picks the next step up from your current role and updates it when you change your role.'+(pa.length>1?'<br>Path: '+pa.map(E).join(' → '):''):'<span class="s1">Could not tell your level from the current role. Include a title such as Executive, Assistant Manager or Manager, or choose it yourself.</span>'):
 'Type any role, or pick a suggestion.'+(nx?' Suggested next step: <a href="#" style="color:var(--cy)" onclick="event.preventDefault();$(\'#e_target\').value=this.textContent">'+E(nx)+'</a>':'')};
 md.onchange=up;r.oninput=up;t.oninput=()=>{mine=t.value};up()}
-function delE(){const it=get(editId);if(!it)return;it.deleted=1;it.updated=Date.now();$('#ed').close();save();render();toast('Deleted',()=>{it.deleted=0;it.updated=Date.now();commit();toast('Restored')})}
+function delE(){const it=get(editId);if(!it)return;it.deleted=1;it.updated=Date.now();$('#ed').close();if(it.kind==='sit')sitApply(it.c);save();render();toast('Deleted',()=>{it.deleted=0;it.updated=Date.now();if(it.kind==='sit')sitApply(it.c);commit();toast('Restored')})}
 
 function toast(t,undo,lab){buzz(8);const e=$('#toast');e.innerHTML='<span>'+E(t)+'</span>'+(undo?'<button class="g" id="tu">'+E(lab||'Undo')+'</button>':'');e.hidden=false;clearTimeout(TT);
 if(undo){UP=1;$('#tu').onclick=()=>{UP=0;e.hidden=true;clearTimeout(TT);undo()}}TT=setTimeout(()=>{e.hidden=true;if(UP){UP=0;sync()}},lab?12000:undo?5000:2200)}
@@ -486,7 +524,7 @@ live('goal').filter(g=>g.due&&+g.pct<100).forEach(g=>o.push({key:'goal-'+g.id,da
 async function sync(manual){if(busy||(UP&&!manual))return;busy=1;try{await sync0(manual)}finally{busy=0}}
 async function sync0(manual){const c=D.cfg;if(!c.url){if(manual)msg('Paste your web app link first.');return}
 msg('Syncing…');sy('Syncing…','busy');try{const j=await api({items:D.items,events:c.cal?evs():undefined},60000);
-merge(j.items);if(j.bk)c.bk=j.bk;c.sv=j.v||0;c.fails=0;c.lastErr='';c.lastAt=Date.now();if(c.cal&&j.cal&&j.cal!=='ok')logE('calendar',j.cal);await save();render();syIdle();
+merge(j.items);if(j.bk)c.bk=j.bk;c.sv=j.v||0;setTimeout(upFiles,500);c.fails=0;c.lastErr='';c.lastAt=Date.now();if(c.cal&&j.cal&&j.cal!=='ok')logE('calendar',j.cal);await save();render();syIdle();
 msg('Synced '+new Date().toLocaleString('en-GB')+(c.cal?(j.cal==='ok'?' · calendar updated':' · calendar problem: '+j.cal):''))}
 catch(e){c.fails=(c.fails||0)+1;c.lastErr=e.message;logE('sync',e);save();sy('Sync failed','err');msg('Sync failed: '+e.message+'. Your data is safe on this device.')}}
 

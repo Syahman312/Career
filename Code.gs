@@ -1,4 +1,4 @@
-// NextRole (formerly Ladder) – Google Apps Script backend, version 1.
+// NextRole (formerly Ladder) – Google Apps Script backend, version 2 (adds result slip uploads).
 // Sheets sync, Calendar (exam + goal dates), daily Drive backups and an error log.
 //
 // Setup:
@@ -8,7 +8,7 @@
 // 4) Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Copy the /exec link into NextRole.
 // After edits: Deploy > Manage deployments > pencil icon > Version: New version > Deploy.
 const TOKEN = 'CHANGE_ME';
-const VERSION = 1;
+const VERSION = 2;
 const CAL_NAME = 'Career';
 
 function authorize() {
@@ -37,6 +37,9 @@ function route(b) {
     case 'health': return health();
     case 'backups': return listBackups();
     case 'getbackup': return getBackup(b.fid);
+    case 'upload': return uploadFile(b);
+    case 'getfile': return getFile(b.fid);
+    case 'delfile': return delFile(b.fid);
     case 'snap': return withLock(() => ({ name: saveBackup(Object.values(readData(dataSheet())), 'before-restore') }));
     default: return withLock(() => syncAll(b));
   }
@@ -73,8 +76,8 @@ function syncAll(b) {
   if (all.length) sh.getRange(2, 1, all.length, 8).setValues(all.map(i => [
     i.id, JSON.stringify(i), i.kind,
     i.date || i.due || i.start || '',
-    i.title || i.name || i.n || i.qual || '',
-    i.impact || i.next || i.st || i.co || i.inst || i.type || '',
+    i.title || i.name || i.n || i.qual || (i.kind === 'sit' ? i.c + ' attempt' : ''),
+    i.impact || i.next || i.st || i.res || i.co || i.inst || i.type || '',
     i.pct !== undefined ? i.pct : (i.score || i.hrs || i.lvl || ''),
     i.deleted ? 'yes' : '']));
   sh.setFrozenRows(1);
@@ -152,6 +155,30 @@ function getBackup(fid) {
   const f = DriveApp.getFileById(String(fid)), ps = f.getParents();
   if (!ps.hasNext() || ps.next().getId() !== backupFolder().getId()) return { error: 'Not a Ladder backup' };
   return { data: f.getBlob().getDataAsString() };
+}
+
+// ---------- Result slips: Drive / NextRole Results ----------
+function resultsFolder() { return topFolder('NextRole Results'); }
+function inResults(f) { const id = resultsFolder().getId(), ps = f.getParents(); while (ps.hasNext()) if (ps.next().getId() === id) return true; return false; }
+function uploadFile(b) {
+  const name = String(b.name || 'result').replace(/[\\/:*?"<>|]/g, ' ').slice(0, 150);
+  const mime = /^(application\/pdf|image\/[\w.+-]+)$/.test(String(b.mime)) ? b.mime : 'application/pdf';
+  const bytes = Utilities.base64Decode(String(b.data || ''));
+  if (!bytes.length) return { error: 'Empty file' };
+  if (bytes.length > 10 * 1024 * 1024) return { error: 'File is larger than 10 MB' };
+  const f = resultsFolder().createFile(Utilities.newBlob(bytes, mime, name));
+  return { fid: f.getId(), url: f.getUrl() };
+}
+function getFile(fid) {
+  const f = DriveApp.getFileById(String(fid));
+  if (!inResults(f)) return { error: 'Not a NextRole result file' };
+  return { data: Utilities.base64Encode(f.getBlob().getBytes()), mime: f.getMimeType(), name: f.getName() };
+}
+function delFile(fid) {
+  const f = DriveApp.getFileById(String(fid));
+  if (!inResults(f)) return { error: 'Not a NextRole result file' };
+  f.setTrashed(true);
+  return { ok: 1 };
 }
 
 // ---------- Connection check ----------
