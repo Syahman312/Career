@@ -130,6 +130,9 @@ button,a,input,select,textarea,label,.cl,.pc,.ti,.chip2{-webkit-tap-highlight-co
 nav .brand,nav kbd,nav .side-extra{display:none}
 .fileb{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--c2);border:1px solid var(--bd2);border-radius:12px;padding:10px 12px;margin-bottom:8px;overflow-wrap:anywhere}
 input[type=file]{padding:10px;font-size:14px!important}
+.slot{display:grid;grid-template-columns:minmax(64px,1fr) minmax(0,1.3fr) auto minmax(0,1.3fr) 36px;gap:6px;align-items:center;margin-bottom:6px}.slot select,.slot input{margin:0!important;min-width:0;padding:10px 8px}.slot .eye{width:36px;height:40px;padding:0;background:none;border:0;color:var(--mu);font-size:16px}
+@media (max-width:420px){.slot{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) 36px;row-gap:6px;padding-bottom:8px;border-bottom:1px solid var(--bd2)}.slot .sd{grid-column:1/4}.slot .eye{grid-row:1;grid-column:4}}
+div.f{display:block;margin:12px 0 0}div.f>span{display:block;font-size:12.5px;color:var(--mu);margin-bottom:5px;font-weight:600}
 .ck{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--bd2)}.ck:last-child{border-bottom:0}.ck>span{flex:none;width:20px;text-align:center}.ck b{font-weight:600}
 .pw{position:relative}.pw input{padding-right:52px}
 .pw .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:40px;padding:0;display:grid;place-items:center;background:none;border:0;border-radius:10px;color:var(--mu)}
@@ -174,7 +177,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.22b',CODE_V=2;
+const APP_V='2026.11.23a',CODE_V=2;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const TABS=['home','goals','acca','journal','profile'],isTab=t=>TABS.includes(t),dlgOpen=()=>!!document.querySelector('dialog[open]');
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv',acca:'papers'},LOGALL=0,TIPO=0;
@@ -270,8 +273,8 @@ function buzz(n){try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}}
 function confetti(){const d=document.createElement('div');d.className='cf';d.innerHTML=Array.from({length:60},()=>`<i style="left:${Math.random()*100}%;background:${['#22e3ff','#fbbf24','#4ade80','#a78bfa','#f87171'][Math.floor(Math.random()*5)]};animation-duration:${1.6+Math.random()*1.6}s;animation-delay:${Math.random()*.4}s"></i>`).join('');document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}
 
 // ---------- data cleaning (also used for synced data) ----------
-const KINDS=['me','goal','acca','skill','win','cpd','job','edu','sit','cls'],NUMF=['pct','score','lvl','tgt','hrs','updated','deleted','ver','cvw','cvl','day'],DATEF=['due','date'],MONF=['start','end'],
-STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,tmode:8,exb:200,res:10,fid:80,fn:120,mime:60,t1:5,t2:5,tut:80,summary:1000};
+const KINDS=['me','goal','acca','skill','win','cpd','job','edu','sit','cls','clog'],NUMF=['pct','score','lvl','tgt','hrs','updated','deleted','ver','cvw','cvl','day'],DATEF=['due','date'],MONF=['start','end'],
+STRF={kind:8,title:200,area:20,next:300,notes:1000,c:4,n:80,l:40,st:20,name:120,impact:300,type:20,co:120,loc:80,pts:3000,inst:120,qual:160,grade:40,email:120,phone:40,link:200,role:120,target:120,tmode:8,exb:200,res:10,fid:80,fn:120,mime:60,t1:5,t2:5,tut:80,slots:300,ref:80,summary:1000};
 function clean(i){if(!i||typeof i!=='object'||Array.isArray(i))return null;if(typeof i.id!=='string'||!/^[\w.:-]{1,80}$/.test(i.id))return null;if(!KINDS.includes(i.kind))return null;const o={};
 for(const k of Object.keys(i)){const v=i[k];
 if(NUMF.includes(k)){if(v==='')o[k]='';else if(v!=null){const n=+v;if(isFinite(n))o[k]=n}}
@@ -324,12 +327,12 @@ function home(){const m=me(),a=accaPct(),G=live('goal'),og=G.filter(g=>+g.pct<10
 C=live('cpd').filter(c=>(c.date||'').startsWith(y)),hrs=sum(C,'hrs'),W=live('win'),wy=W.filter(w=>(w.date||'').startsWith(y)).length,ne=nextExam(),
 S=live('skill'),atT=S.filter(s=>+s.lvl>=+s.tgt).length,gap=S.filter(s=>+s.tgt>+s.lvl).sort((x,z)=>(z.tgt-z.lvl)-(x.tgt-x.lvl)).slice(0,3),
 passed=live('acca').filter(p=>okSt(p)&&(OLDC.has(p.c)||p.c==='SDS')).sort((x,z)=>pOrd(x.c)-pOrd(z.c)),h=new Date().getHours(),
-nc=nextCls(),up=[...(nc&&dd(nc.ds)<=7?[{d:nc.ds,t:(nc.now?'On now: ':'')+nc.x.title,s:DAYN[+nc.x.day].slice(0,3)+' '+fmtT(nc.x.t1)+'–'+fmtT(nc.x.t2)+(nc.x.loc?' · '+nc.x.loc:''),id:nc.x.id,k:'cls'}]:[]),...og.filter(g=>g.due&&dd(g.due)<=60).map(g=>({d:g.due,t:g.title,s:g.area,id:g.id,k:'goal'})),...live('acca').filter(p=>p.st==='Booked'&&p.date&&dd(p.date)>=0).map(p=>({d:p.date,t:p.c+' exam',s:p.n,id:p.id,k:'acca'}))].sort((x,z)=>x.d.localeCompare(z.d)).slice(0,5),
+nc=nextCls(),up=[...(nc&&dd(nc.ds)<=7?[{d:nc.ds,t:(nc.now?'On now: ':'')+nc.x.title,s:DAYN[nc.s.day].slice(0,3)+' '+fmtT(nc.s.t1)+'–'+fmtT(nc.s.t2)+(nc.x.loc?' · '+nc.x.loc:''),id:nc.x.id,k:'cls'}]:[]),...og.filter(g=>g.due&&dd(g.due)<=60).map(g=>({d:g.due,t:g.title,s:g.area,id:g.id,k:'goal'})),...live('acca').filter(p=>p.st==='Booked'&&p.date&&dd(p.date)>=0).map(p=>({d:p.date,t:p.c+' exam',s:p.n,id:p.id,k:'acca'}))].sort((x,z)=>x.d.localeCompare(z.d)).slice(0,5),
 lastWin=W.map(w=>w.date).sort().pop(),nudge=!lastWin||dd(lastWin)<-14;
 return `<p class="hi">${h<12?'Good morning':h<18?'Good afternoon':'Good evening'}${m.name?', <b>'+E(m.name.split(' ')[0])+'</b>':''}.</p>
 <div class="c glow mt"><div class="hero">${ring(a.pct,Math.round(a.pct)+'%','ACCA')}<div style="min-width:0"><div class="m">Now</div><b>${E(m.role||'—')}</b><div class="m mt">Next role${m.tmode==='auto'?' <span class="tag s3" style="font-size:10.5px">Auto</span>':''}</div><b class="cl" onclick="openE('me','me')" title="Change next role">${E(m.target||'Tap to set')}</b></div></div>
 ${passed.length?`<div class="chips">${passed.map(p=>`<span class="chip2 s0">✓ ${E(p.c)}</span>`).join('')}</div>`:''}</div>
-${kpis([['Goals',Math.round(gp)+'%'],['Next exam',ne?E(ne.c)+' · '+dd(ne.date)+'d':'—',ne&&dd(ne.date)<=30?'s1':''],['Learning '+y,num(hrs+flowYrH(y))+' h'],['Wins '+y,wy],['Open goals',og.length],['Skills at target',atT+'/'+S.length,S.length&&atT===S.length?'s0':'']])}
+${kpis([['Goals',Math.round(gp)+'%'],['Next exam',ne?E(ne.c)+' · '+dd(ne.date)+'d':'—',ne&&dd(ne.date)<=30?'s1':''],['Learning '+y,num(hrs+flowYrH(y)+clsYrH(y))+' h'],['Wins '+y,wy],['Open goals',og.length],['Skills at target',atT+'/'+S.length,S.length&&atT===S.length?'s0':'']])}
 ${nudge?`<div class="c cl" style="border-color:var(--amb)" onclick="openE('win')"><b>🏆 ${lastWin?'No wins logged for '+Math.abs(dd(lastWin))+' days':'Log your first win'}</b><div class="m">Small things count. Note the impact while it is fresh. It feeds your appraisal and resume.</div></div>`:''}
 ${up.length?'<section>'+sh('Coming up')+'<div class="c">'+up.map(u=>{const n=dd(u.d);return `<div class="pc" onclick="openE('${u.k}','${E(u.id)}')"><div style="flex:1;min-width:0"><b>${E(u.t)}</b><div class="m">${E(u.s||'')} · ${fd(u.d)}</div></div><span class="tag ${n<0?'s2':n<=14?'s1':'s3'}">${inD(n)}</span></div>`}).join('')+'</div></section>':''}
 <section>${sh('Next actions')}${og.filter(g=>g.next).length?'<div class="c">'+og.filter(g=>g.next).sort(byDue).map(g=>`<div class="pc" onclick="openE('goal','${E(g.id)}')"><span class="tag s3">${E(g.area||'Goal')}</span><div style="flex:1;min-width:0">${E(g.next)}<div class="m">${E(g.title)}</div></div></div>`).join('')+'</div>':'<p class="m">No open actions. Add a next step to a goal.</p>'}</section>
@@ -393,8 +396,8 @@ if(s==='win'){const W=srt(live('win')),mo=today().slice(0,7);
 h+=kpis([['This month',W.filter(w=>(w.date||'').startsWith(mo)).length],['This year',W.filter(w=>(w.date||'').startsWith(y)).length],['All time',W.length]])+
 '<p class="m">For appraisals and your resume. Say what changed: time saved, RM, accuracy, people helped.</p>'+
 (W.length?tline(W,w=>`<div class="ti" onclick="openE('win','${E(w.id)}')"><span class="ic w">🏆</span><div class="r"><b>${E(w.title)}</b><span class="m">${sd(w.date)}</span></div>${w.impact?`<div class="m">${E(w.impact)}</div>`:''}</div>`,a=>a.length+' win'+(a.length>1?'s':'')):'<p class="m mt">No wins yet. Tap + to log one this week.</p>')}
-else{const C=srt(live('cpd')),CY=C.filter(c=>(c.date||'').startsWith(y)),fy=flowYrH(y),hy=sum(CY,'hrs')+fy,vy=sum(CY.filter(c=>c.ver),'hrs'),tg=+D.cfg.cpdT||40;
-h+=`<div class="c glow mt"><div class="r"><b>${y} learning</b><b>${num(hy)} / ${tg} h</b></div><div class="bar"><i style="width:${Math.min(100,hy/tg*100)}%;${hy>=tg?'background:var(--grn)':''}"></i></div><div class="m">${fy?num(fy)+' h study from Flow · ':''}${num(vy)} h verifiable · ${hy>=tg?'Target met 🎉':num(tg-hy)+' h to go'} · change target in Settings</div></div>`+
+else{const C=srt(live('cpd')),CY=C.filter(c=>(c.date||'').startsWith(y)),fy=flowYrH(y),cy=clsYrH(y),hy=sum(CY,'hrs')+fy+cy,vy=sum(CY.filter(c=>c.ver),'hrs'),tg=+D.cfg.cpdT||40;
+h+=`<div class="c glow mt"><div class="r"><b>${y} learning</b><b>${num(hy)} / ${tg} h</b></div><div class="bar"><i style="width:${Math.min(100,hy/tg*100)}%;${hy>=tg?'background:var(--grn)':''}"></i></div><div class="m">${cy?num(cy)+' h from classes · ':''}${fy?num(fy)+' h study from Flow · ':''}${num(vy)} h verifiable · ${hy>=tg?'Target met 🎉':num(tg-hy)+' h to go'} · change target in Settings</div></div>`+
 kpis([['Entries',CY.length],['This month',num(sum(C.filter(c=>(c.date||'').startsWith(today().slice(0,7))),'hrs'))+' h'],['All time',num(sum(C,'hrs'))+' h']])+
 (C.length?tline(C,c=>`<div class="ti" onclick="openE('cpd','${E(c.id)}')"><span class="ic">${cico(c.type)}</span><div class="r"><b>${E(c.title)}</b><b>${num(c.hrs)} h</b></div><div class="r"><span class="m">${E(c.type||'')}${c.ver?' · <span class="s0">Verifiable</span>':''}</span><span class="m">${sd(c.date)}</span></div></div>`,a=>num(sum(a,'hrs'))+' h'):'<p class="m mt">Nothing logged yet. Tap + to add a course, book or webinar.</p>')}
 return h}
@@ -422,35 +425,58 @@ addD=(s,n)=>{const d=new Date(s+'T00:00');d.setDate(d.getDate()+n);return ymd(d)
 nowHM=()=>{const d=new Date();return p2(d.getHours())+':'+p2(d.getMinutes())},
 toMin=t=>{const m=/^(\d{1,2}):(\d{2})/.exec(t||'');return m?+m[1]*60+ +m[2]:0},
 fmtT=t=>{if(!/^\d{1,2}:\d{2}/.test(t||''))return '';const m=toMin(t),h=Math.floor(m/60),mm=m%60;return (h%12||12)+(mm?':'+p2(mm):'')+(h<12?' am':' pm')},
-clsHrs=x=>Math.max(0,toMin(x.t2)-toMin(x.t1))/60,
-clsOn=(x,ds)=>+x.day===new Date(ds+'T00:00').getDay()&&(!x.date||ds>=x.date)&&(!x.due||ds<=x.due),
-clsLive=x=>!x.due||x.due>=today();
+spanH=(a,b)=>Math.max(0,toMin(b)-toMin(a))/60,wdOf=ds=>new Date(ds+'T00:00').getDay(),
+// a class can meet on several days, each with its own time: "2|19:30|22:00;6|09:00|12:00"
+slotsOf=x=>{const o=String(x.slots||'').split(';').map(r=>r.split('|')).filter(r=>r.length===3&&/^[0-6]$/.test(r[0])&&/^\d\d:\d\d$/.test(r[1])&&/^\d\d:\d\d$/.test(r[2])).map(r=>({day:+r[0],t1:r[1],t2:r[2]}));
+return o.length?o:(x.t1&&x.t2&&x.day!==''&&x.day!=null?[{day:+x.day,t1:x.t1,t2:x.t2}]:[])},
+inTerm=(x,ds)=>(!x.date||ds>=x.date)&&(!x.due||ds<=x.due),clsLive=x=>!x.due||x.due>=today(),
+occOn=(C,ds)=>C.flatMap(x=>inTerm(x,ds)?slotsOf(x).filter(s=>s.day===wdOf(ds)).map(s=>({x,s,ds})):[]).sort((a,b)=>a.s.t1.localeCompare(b.s.t1)),
+logId=(x,ds,s)=>'cl-'+x.id+'-'+ds+'-'+s.t1.replace(':',''),
+clsWeek=()=>{const t=today();let n=0,h=0;for(let i=0;i<7;i++)occOn(live('cls'),addD(t,i)).forEach(o=>{n++;h+=spanH(o.s.t1,o.s.t2)});return{n,h}};
 function nextCls(){const C=live('cls');if(!C.length)return null;const t=today(),hm=nowHM();
-for(let i=0;i<15;i++){const ds=addD(t,i),L=C.filter(x=>clsOn(x,ds)&&(i>0||(x.t2||x.t1)>hm)).sort((a,b)=>(a.t1||'').localeCompare(b.t1||''));
-if(L.length)return{x:L[0],ds,now:i===0&&L[0].t1<=hm}}return null}
+for(let i=0;i<15;i++){const L=occOn(C,addD(t,i)).filter(o=>i>0||o.s.t2>hm);if(L.length){const o=L[0];return{...o,now:i===0&&o.s.t1<=hm}}}return null}
+// past sessions from the timetable (last 4 weeks) still waiting for attended / missed
+function toMark(){const C=live('cls'),t=today(),hm=nowHM(),o=[];for(let i=0;i<=28;i++){const ds=addD(t,-i);occOn(C,ds).forEach(q=>{if(i===0&&q.s.t2>hm)return;const g=get(logId(q.x,ds,q.s));if(!g||g.deleted)o.push(q)})}return o}
+const clsAttH=y=>live('clog').filter(l=>l.st==='Attended'&&(!y||(l.date||'').startsWith(y))).reduce((s,l)=>s+spanH(l.t1,l.t2),0),
+clsYrH=y=>D.cfg.clsHrs===0?0:clsAttH(y);
+function clsRate(ref){const L=live('clog').filter(l=>!ref||l.ref===ref),a=L.filter(l=>l.st==='Attended').length,m=L.filter(l=>l.st==='Missed').length;return{a,m,r:a+m?Math.round(a/(a+m)*100):null}}
+function markCls(xid,ds,t1,st){const x=get(xid);if(!x)return;const s=slotsOf(x).find(q=>q.t1===t1&&q.day===wdOf(ds))||{t1,t2:t1};const id=logId(x,ds,s);let g=get(id);
+if(g){g.deleted=0;g.st=st;g.updated=Date.now()}else D.items.push(g={id,kind:'clog',ref:x.id,title:x.title,c:x.c||'',date:ds,t1:s.t1,t2:s.t2,st,updated:Date.now()});
+commit();buzz(8);toast((st==='Attended'?'✓ Attended ':st==='Missed'?'Missed ':'Cancelled ')+x.title+' · '+sd(ds),()=>{g.deleted=1;g.updated=Date.now();commit()})}
 function accaSeg(){const c=SEG.acca==='classes';return `<div class="seg"><button class="${c?'':'on'}" onclick="setSeg('acca','papers')">📚 Papers</button><button class="${c?'on':''}" onclick="setSeg('acca','classes')">🗓 Classes</button></div>`}
-function classesView(){const C=live('cls'),A=C.filter(clsLive),nc=nextCls(),t=today(),td=new Date().getDay(),hm=nowHM(),
-wk=A.filter(x=>!x.date||x.date<=addD(t,6)),hrs=wk.reduce((s,x)=>s+clsHrs(x),0),pp=new Set(A.map(x=>x.c).filter(Boolean));
+function classesView(){const C=live('cls'),nc=nextCls(),t=today(),td=new Date().getDay(),hm=nowHM(),w=clsWeek(),R=clsRate(),TM=toMark(),Lg=live('clog').sort((a,b)=>(b.date+b.t1).localeCompare(a.date+a.t1));
 let h='';
-if(nc){const x=nc.x,n=dd(nc.ds);h+=`<div class="c glow"><div class="r"><span class="m">${nc.now?'On now':'Next class'}</span><span class="tag ${nc.now?'s0':n<=1?'s1':'s3'}">${nc.now?'until '+fmtT(x.t2):n===0?'today':n===1?'tomorrow':'in '+n+' days'}</span></div>
-<b style="font-size:18px;display:block;margin-top:4px">${E(x.title)}</b><div class="m">${DAYN[+x.day]} ${fd(nc.ds)} · ${fmtT(x.t1)}–${fmtT(x.t2)}${x.loc?' · '+E(x.loc):''}${x.tut?' · '+E(x.tut):''}</div>
+if(nc){const x=nc.x,s=nc.s,n=dd(nc.ds);h+=`<div class="c glow"><div class="r"><span class="m">${nc.now?'On now':'Next class'}</span><span class="tag ${nc.now?'s0':n<=1?'s1':'s3'}">${nc.now?'until '+fmtT(s.t2):n===0?'today':n===1?'tomorrow':'in '+n+' days'}</span></div>
+<b style="font-size:18px;display:block;margin-top:4px">${E(x.title)}</b><div class="m">${DAYN[s.day]} ${fd(nc.ds)} · ${fmtT(s.t1)}–${fmtT(s.t2)}${x.loc?' · '+E(x.loc):''}${x.tut?' · '+E(x.tut):''}</div>
 ${x.link?`<div class="btns mt"><a class="btn sm pri" href="${E(x.link)}" target="_blank" rel="noopener" style="text-decoration:none">Join online class</a></div>`:''}</div>`}
-h+=kpis([['Classes a week',wk.length],['Hours a week',num(hrs)],['Papers',pp.size?[...pp].join(', '):'—']]);
-h+=`<div class="btns" style="margin:8px 0"><button class="btn sm pri" onclick="openE('cls')">+ Add class</button>${C.length?'<button class="btn sm" onclick="clsICS()">📅 Add to my calendar</button>':''}</div>`;
-if(!C.length)return h+'<p class="m">No classes yet. Add your tuition or revision classes with the day and time. Your next class then shows here and on Home.</p>';
-h+=WEEK.map(d=>{const L=C.filter(x=>+x.day===d).sort((a,b)=>(a.t1||'').localeCompare(b.t1||''));if(!L.length)return '';const isT=d===td;
-return '<section>'+sh(DAYN[d]+(isT?' · Today':''),L.length)+'<div class="c"'+(isT?' style="border-color:var(--cy)"':'')+'>'+L.map(x=>{const ended=x.due&&x.due<t,soon=x.date&&x.date>t,on=isT&&!ended&&!soon&&x.t1<=hm&&hm<x.t2;
-return `<div class="pc" onclick="openE('cls','${E(x.id)}')"${ended?' style="opacity:.5"':''}><span class="code ${on?'s0':x.c?'s3':''}" style="width:64px;font-size:12px">${fmtT(x.t1).replace(' ','')}</span><div style="flex:1;min-width:0"><div>${E(x.title)}</div><div class="m">${[fmtT(x.t1)+'–'+fmtT(x.t2),x.loc,x.tut].filter(Boolean).map(E).join(' · ')}</div></div>${on?'<span class="tag s0">Now</span>':ended?'<span class="tag s4">Ended</span>':soon?`<span class="tag s1">From ${sd(x.date)}</span>`:x.c?`<span class="tag s3">${E(x.c)}</span>`:''}</div>`}).join('')+'</div></section>'}).join('');
-return h+'<p class="m mt">“Add to my calendar” makes a calendar file with weekly repeats. Open it on your phone or import it into Google Calendar, and the classes also show in Flow’s Today.</p>'}
-const icsE=s=>String(s||'').replace(/[\\;,]/g,m=>'\\'+m).replace(/\r?\n/g,'\\n'),
+h+=kpis([['Classes this week',w.n],['Hours this week',num(w.h)],['Attendance',R.r==null?'—':R.r+'%',R.r==null?'':R.r>=80?'s0':R.r>=60?'s1':'s2']]);
+h+=`<div class="btns" style="margin:8px 0"><button class="btn sm pri" onclick="openE('cls')">+ Add class</button><button class="btn sm" onclick="openE('clog')">+ Log a past class</button>${C.length?'<button class="btn sm" onclick="clsICS()">📅 Add to my calendar</button>':''}</div>`;
+if(!C.length&&!Lg.length)return h+'<p class="m">No classes yet. Add your tuition or revision classes. A class can meet on several days, each with its own time. Use “Log a past class” for classes you attended before.</p>';
+if(TM.length)h+='<section>'+sh('Did you attend?',TM.length)+'<div class="c">'+TM.slice(0,6).map(q=>`<div class="pc" style="cursor:default"><div style="flex:1;min-width:0"><b>${E(q.x.title)}</b><div class="m">${DAYN[q.s.day].slice(0,3)} ${fd(q.ds)} · ${fmtT(q.s.t1)}–${fmtT(q.s.t2)}</div></div><div class="btns" style="flex:none"><button class="btn sm" style="color:var(--grn)" aria-label="Attended" onclick="markCls('${E(q.x.id)}','${q.ds}','${q.s.t1}','Attended')">✓</button><button class="btn sm" style="color:var(--red)" aria-label="Missed" onclick="markCls('${E(q.x.id)}','${q.ds}','${q.s.t1}','Missed')">✗</button></div></div>`).join('')+(TM.length>6?`<p class="m" style="margin:8px 0 0">${TM.length-6} more from earlier weeks.</p>`:'')+'</div></section>';
+h+=WEEK.map(d=>{const L=C.flatMap(x=>slotsOf(x).filter(s=>s.day===d).map(s=>({x,s}))).sort((a,b)=>a.s.t1.localeCompare(b.s.t1));if(!L.length)return '';const isT=d===td;
+return '<section>'+sh(DAYN[d]+(isT?' · Today':''),L.length)+'<div class="c"'+(isT?' style="border-color:var(--cy)"':'')+'>'+L.map(({x,s})=>{const ended=x.due&&x.due<t,soon=x.date&&x.date>t,on=isT&&!ended&&!soon&&s.t1<=hm&&hm<s.t2,rt=clsRate(x.id),more=slotsOf(x).length>1;
+return `<div class="pc" onclick="openE('cls','${E(x.id)}')"${ended?' style="opacity:.5"':''}><span class="code ${on?'s0':x.c?'s3':''}" style="width:64px;font-size:12px">${fmtT(s.t1).replace(' ','')}</span><div style="flex:1;min-width:0"><div>${E(x.title)}</div><div class="m">${[fmtT(s.t1)+'–'+fmtT(s.t2),x.loc,more?'also '+slotsOf(x).filter(q=>q!==s&&q.day!==d).map(q=>DAYN[q.day].slice(0,3)).join(', '):'',rt.a+rt.m?'attended '+rt.a+'/'+(rt.a+rt.m):''].filter(Boolean).map(E).join(' · ')}</div></div>${on?'<span class="tag s0">Now</span>':ended?'<span class="tag s4">Ended</span>':soon?`<span class="tag s1">From ${sd(x.date)}</span>`:x.c?`<span class="tag s3">${E(x.c)}</span>`:''}</div>`}).join('')+'</div></section>'}).join('');
+if(Lg.length){const all=SEG.clsAll,L2=all?Lg:Lg.slice(0,10),ah=clsAttH();
+h+='<section>'+sh('Class history',R.a+' attended · '+num(ah)+' h')+'<div class="c">'+L2.map(l=>`<div class="pc" onclick="openE('clog','${E(l.id)}')"><div style="flex:1;min-width:0"><div>${E(l.title)}</div><div class="m">${[fd(l.date),fmtT(l.t1)+'–'+fmtT(l.t2),l.notes].filter(Boolean).map(E).join(' · ')}</div></div><span class="tag ${l.st==='Attended'?'s0':l.st==='Missed'?'s2':'s4'}">${E(l.st)}</span></div>`).join('')+
+(Lg.length>10?`<button class="btn sm mt" onclick="SEG.clsAll=!SEG.clsAll;render()">${all?'Show less':'Show all '+Lg.length}</button>`:'')+'</div></section>'}
+return h+`<p class="m mt">Attended class hours count toward your learning hours${D.cfg.clsHrs===0?' (turned off in Settings)':''}. “Add to my calendar” makes a calendar file with weekly repeats for every day and time.</p>`}
+const icsE=s=>String(s||'').replace(/[\;,]/g,m=>'\\'+m).replace(/\r?\n/g,'\\n'),
 icsFold=l=>{const o=[];while(l.length>73){o.push(l.slice(0,73));l=' '+l.slice(73)}o.push(l);return o.join('\r\n')};
 function clsICS(){const t=today(),st=new Date().toISOString().replace(/[-:]|\.\d+/g,''),L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//NextRole//Classes//EN','CALSCALE:GREGORIAN','X-WR-CALNAME:Classes'];let n=0;
-live('cls').filter(clsLive).forEach(x=>{let s=x.date&&x.date>t?x.date:t,i=0;while(i<7&&new Date(s+'T00:00').getDay()!==+x.day){s=addD(s,1);i++}if(x.due&&s>x.due)return;
-const d=s.replace(/-/g,''),a=x.t1.replace(':',''),b=x.t2.replace(':','');n++;
-L.push('BEGIN:VEVENT','UID:'+x.id+'@nextrole','DTSTAMP:'+st,'DTSTART:'+d+'T'+a+'00','DTEND:'+d+'T'+b+'00','RRULE:FREQ=WEEKLY;BYDAY='+ICSD[+x.day]+(x.due?';UNTIL='+x.due.replace(/-/g,'')+'T235959':''),
+live('cls').filter(clsLive).forEach(x=>slotsOf(x).forEach((sl,k)=>{let s=x.date&&x.date>t?x.date:t,i=0;while(i<7&&wdOf(s)!==sl.day){s=addD(s,1);i++}if(x.due&&s>x.due)return;
+const d=s.replace(/-/g,''),a=sl.t1.replace(':',''),b=sl.t2.replace(':','');n++;
+L.push('BEGIN:VEVENT','UID:'+x.id+'-'+k+'@nextrole','DTSTAMP:'+st,'DTSTART:'+d+'T'+a+'00','DTEND:'+d+'T'+b+'00','RRULE:FREQ=WEEKLY;BYDAY='+ICSD[sl.day]+(x.due?';UNTIL='+x.due.replace(/-/g,'')+'T235959':''),
 'SUMMARY:'+icsE(x.title+(x.c&&!x.title.includes(x.c)?' ('+x.c+')':'')),...(x.loc?['LOCATION:'+icsE(x.loc)]:[]),'DESCRIPTION:'+icsE([x.tut?'Tutor: '+x.tut:'',x.link,x.notes].filter(Boolean).join('\n')),...(x.link?['URL:'+x.link]:[]),
-'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Class soon','TRIGGER:-PT30M','END:VALARM','END:VEVENT')});
+'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Class soon','TRIGGER:-PT30M','END:VALARM','END:VEVENT')}));
 L.push('END:VCALENDAR');if(!n)return toast('No current classes to add');dlFile(new Blob([L.map(icsFold).join('\r\n')+'\r\n'],{type:'text/calendar'}),'nextrole-classes.ics')}
+// form rows for "Days and times"
+const slotRow=s=>`<div class="slot"><select class="sd" aria-label="Day">${WEEK.map(d=>`<option value="${d}"${d===s.day?' selected':''}>${DAYN[d].slice(0,3)}</option>`).join('')}</select><input type="time" class="ta" aria-label="Starts" value="${E(s.t1||'')}"><span class="m">to</span><input type="time" class="tb" aria-label="Ends" value="${E(s.t2||'')}"><button type="button" class="eye" aria-label="Remove this day" onclick="slotDel(this)">✕</button></div>`;
+function slotAdd(){const w=$('#slots'),r=[...w.querySelectorAll('.slot')].pop(),d=r?(+r.querySelector('.sd').value+1)%7:new Date().getDay();
+w.insertAdjacentHTML('beforeend',slotRow({day:d,t1:r?r.querySelector('.ta').value:'19:00',t2:r?r.querySelector('.tb').value:'22:00'}))}
+function slotDel(b){const w=$('#slots');if(w.querySelectorAll('.slot').length<2)return toast('A class needs at least one day');b.parentNode.remove()}
+function slotRead(){const R=[...document.querySelectorAll('#slots .slot')].map(r=>({day:+r.querySelector('.sd').value,t1:r.querySelector('.ta').value,t2:r.querySelector('.tb').value}));
+if(!R.length)return 'Add at least one day and time.';for(const s of R){if(!s.t1||!s.t2)return 'Fill in the start and end time for '+DAYN[s.day]+'.';if(s.t2<=s.t1)return 'On '+DAYN[s.day]+' the end time must be after the start time.'}
+const k=R.map(s=>s.day+s.t1);if(new Set(k).size<k.length)return 'The same day and start time is listed twice.';return R.sort((a,b)=>(WEEK.indexOf(a.day)-WEEK.indexOf(b.day))||a.t1.localeCompare(b.t1))}
 async function dlFile(b,name){const f=new File([b],name,{type:b.type});try{if(matchMedia('(pointer:coarse)').matches&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e.name==='AbortError')return;logE('share',e)}
 const a=document.createElement('a'),u=URL.createObjectURL(b);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),6e4)}
 
@@ -614,16 +640,18 @@ cpd:['learning',[['date','Date','date',{req:1}],['title','Course, book or webina
 job:['job',[['title','Job title','text',{req:1}],['co','Company','text',{req:1}],['loc','Location','text'],['start','Start','month'],['end','End (blank = present)','month'],['pts','Key points, one per line','textarea',{rows:5}]]],
 edu:['education',[['inst','Institution','text',{req:1}],['qual','Qualification','text',{ph:'e.g. Bachelor of Accounting'}],['grade','Grade / CGPA','text'],['start','Start','month'],['end','End','month']]],
 skill:['skill',[['name','Skill','text',{req:1}],['lvl','Current level','select',[1,2,3,4,5]],['tgt','Target level','select',[1,2,3,4,5]]]],
-cls:['class',[['title','Class or subject','text',{req:1,ph:'e.g. SBR revision class'}],['c','ACCA paper (optional)','select',[['','None'],...[...PAPERS,...EXTRA.filter(x=>x[0]==='SDS')].map(x=>[x[0],x[0]+' · '+x[1]])]],['day','Day','select',[1,2,3,4,5,6,0].map(d=>[d,['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d]])],['t1','Starts','time',{req:1}],['t2','Ends','time',{req:1}],['loc','Where','text',{ph:'e.g. tuition centre, Zoom'}],['link','Online class link','url',{ph:'https://…'}],['tut','Tutor','text'],['date','First class (blank = already started)','date'],['due','Last class (blank = no end date)','date'],['notes','Notes','textarea']]],
+cls:['class',[['title','Class or subject','text',{req:1,ph:'e.g. SBR revision class'}],['c','ACCA paper (optional)','select',[['','None'],...[...PAPERS,...EXTRA.filter(x=>x[0]==='SDS')].map(x=>[x[0],x[0]+' · '+x[1]])]],['slots','Days and times','slots'],['loc','Where','text',{ph:'e.g. tuition centre, Zoom'}],['link','Online class link','url',{ph:'https://…'}],['tut','Tutor','text'],['date','First class (blank = already started)','date'],['due','Last class (blank = no end date)','date'],['notes','Notes','textarea']]],
+clog:['past class',[['title','Class','text',{req:1,ph:'e.g. SBR revision class'}],['c','ACCA paper (optional)','select',[['','None'],...[...PAPERS,...EXTRA.filter(x=>x[0]==='SDS')].map(x=>[x[0],x[0]+' · '+x[1]])]],['date','Date','date',{req:1}],['t1','Started','time',{req:1}],['t2','Ended','time',{req:1}],['st','Attendance','select',['Attended','Missed','Cancelled']],['notes','Topics covered or notes','textarea']]],
 sit:['attempt',[['date','Exam date','date',{req:1}],['res','Result','select',['Waiting','Passed','Failed','Absent']],['score','Marks (out of 100)','number',{step:'1'}],['file','Result slip (PDF or photo)','file']]],
 acca:['paper',[['st','Status','select',ST],['date','Exam date','date'],['score','Score (out of 100)','number',{step:'1'}]]],
 me:['details',[['name','Full name','text'],['role','Current role','text',{ph:'e.g. Executive, Group Consolidation'}],['tmode','How to set your next role','select',[['manual','I choose it myself'],['auto','Work it out from my current role']]],['target','Next role','text',{list:'rolesDL',after:'<p class="m" id="tPrev" style="margin:6px 0 0"></p><datalist id="rolesDL"></datalist>'}],['email','Email','email'],['phone','Phone','tel'],['loc','Location','text'],['link','LinkedIn URL','url'],['summary','Profile summary (2–3 lines)','textarea',{rows:4}]]]};
-let SITC='';const DEF={cls:()=>({day:new Date().getDay(),t1:'19:00',t2:'22:00'}),sit:()=>({c:SITC,date:today(),res:'Waiting'}),goal:()=>({area:'Work',pct:0}),win:()=>({date:today()}),cpd:()=>({date:today(),type:'Course',hrs:1}),skill:()=>({lvl:1,tgt:4})};
+let SITC='';const DEF={cls:()=>({day:new Date().getDay(),t1:'19:00',t2:'22:00'}),clog:()=>({date:addD(today(),-1),t1:'19:00',t2:'22:00',st:'Attended'}),sit:()=>({c:SITC,date:today(),res:'Waiting'}),goal:()=>({area:'Work',pct:0}),win:()=>({date:today()}),cpd:()=>({date:today(),type:'Course',hrs:1}),skill:()=>({lvl:1,tgt:4})};
 function openE(k,id){editK=k;editId=id||null;const it=id?get(id):(DEF[k]?DEF[k]():{});if(!it)return;const[t,F]=FORMS[k];
 $('#et').textContent=k==='sit'?(id?'Edit':'Add')+' attempt · '+it.c:k==='acca'?it.c+' · '+it.n:k==='me'?'Your details':(id?'Edit ':'Add ')+t;
 $('#eb').innerHTML=F.map(([f,l,ty,o])=>{o=o||{};const v=it[f]??'',a=`id="e_${f}" name="${f}"${o.req?' required':''}${o.ph?` placeholder="${E(o.ph)}"`:''}`;
 if(ty==='select')return `<label class="f"><span>${l}</span><select ${a}>${o.map(x=>{const[ov,ol]=Array.isArray(x)?x:[x,x];return `<option value="${E(ov)}"${String(ov)===String(v)?' selected':''}>${E(ol)}</option>`}).join('')}</select></label>`;
 if(ty==='textarea')return `<label class="f"><span>${l}</span><textarea ${a} rows="${o.rows||3}">${E(v)}</textarea></label>`;
+if(ty==='slots'){const S=slotsOf(it);return `<div class="f"><span>${l}</span><div id="slots">${(S.length?S:[{day:new Date().getDay(),t1:'19:00',t2:'22:00'}]).map(slotRow).join('')}</div><button type="button" class="btn sm" onclick="slotAdd()">+ Add another day</button><p class="m" style="margin:6px 0 0">Add each day the class meets. Times can differ by day.</p></div>`}
 if(ty==='file')return `<label class="f"><span>${l}</span>${it.fn?`<div class="fileb"><span>📄 ${E(it.fn)}<br><small class="m">${it.fid?'Saved in Google Drive':'On this device'+(D.cfg.url?' · uploads on next sync':'')}</small></span><div class="btns"><button type="button" class="btn sm" onclick="viewFile('${E(it.id)}')">View</button>${it.fid?`<a class="btn sm" href="https://drive.google.com/file/d/${encodeURIComponent(it.fid)}/view" target="_blank" rel="noopener" style="text-decoration:none">Drive</a>`:''}<button type="button" class="btn sm" onclick="rmFile('${E(it.id)}')">Remove</button></div></div>`:''}<input type="file" id="e_file" accept="application/pdf,image/*"></label><p class="m" style="margin:4px 0 0">${it.fn?'Pick a file to replace it. ':''}PDF or photo, up to 10 MB. Kept on this device${D.cfg.url?((D.cfg.sv||0)>=2?' and in your Google Drive (NextRole Results folder).':'. Update Code.gs to version 2 to also keep it in Google Drive.'):'. Connect Google in Settings to keep a copy in Drive.'}</p>`;
 if(ty==='check')return `<label class="switch"><span>${l}</span><input type="checkbox" ${a}${v?' checked':''}></label>`;
 if(ty==='range')return `<label class="f"><span>${l}</span><input type="range" min="0" max="100" step="5" ${a} value="${+v||0}" oninput="$('#rv').textContent=this.value+'%'"></label><div id="rv">${+v||0}%</div>`;
@@ -631,13 +659,15 @@ return `<label class="f"><span>${l}</span><input type="${ty}" ${a} value="${E(v)
 $('#ex').hidden=!id||k==='acca'||k==='me';if(k==='me')meWire();if(!$('#ed').open)$('#ed').showModal();$('#ed').scrollTop=0;pushTab()}
 $('#ef').onsubmit=e=>{e.preventDefault();const[t,F]=FORMS[editK],now=Date.now();let it=editId&&get(editId),isNew=!it;
 const nf=editK==='sit'&&$('#e_file')&&$('#e_file').files[0];if(nf&&nf.size>FMAX)return alert('That file is larger than 10 MB. Save a smaller PDF or take a photo instead.');
-if(editK==='cls'&&$('#e_t1').value&&$('#e_t2').value&&$('#e_t2').value<=$('#e_t1').value)return alert('The end time must be after the start time.');
+let SLR=null;if(editK==='cls'){SLR=slotRead();if(typeof SLR==='string')return alert(SLR)}
+if(editK==='clog'&&$('#e_t1').value&&$('#e_t2').value&&$('#e_t2').value<=$('#e_t1').value)return alert('The end time must be after the start time.');
 if(editK==='cls'&&$('#e_date').value&&$('#e_due').value&&$('#e_due').value<$('#e_date').value)return alert('The last class is before the first class.');
 const sc=$('#e_score');if(sc&&sc.value!==''&&(+sc.value<0||+sc.value>100))return alert('Marks must be between 0 and 100.');
 if(!it){it={id:uid(),kind:editK};if(editK==='sit')it.c=SITC;D.items.push(it)}const was={...it};
-F.forEach(([f,,ty])=>{if(ty==='file')return;const el=$('#e_'+f);let v=ty==='check'?(el.checked?1:0):el.value.trim();if(ty==='number'||ty==='range'||f==='lvl'||f==='tgt'||f==='day')v=v===''?'':+v;it[f]=v});
+F.forEach(([f,,ty])=>{if(ty==='file'||ty==='slots')return;const el=$('#e_'+f);let v=ty==='check'?(el.checked?1:0):el.value.trim();if(ty==='number'||ty==='range'||f==='lvl'||f==='tgt'||f==='day')v=v===''?'':+v;it[f]=v});
 if(editK==='acca'&&it.score!==''&&(it.score<0||it.score>100))return alert('Score must be between 0 and 100.');
 if(editK==='job'&&it.start&&it.end&&it.end<it.start)return alert('End month is before the start month.');
+if(SLR){it.slots=SLR.map(q=>q.day+'|'+q.t1+'|'+q.t2).join(';');it.day=SLR[0].day;it.t1=SLR[0].t1;it.t2=SLR[0].t2}
 if(editK==='me'&&it.tmode==='auto'){const nx=autoNext(it.role);if(nx)it.target=nx}
 it.updated=now;$('#ed').close();
 if(editK==='acca')autoSit(it);let np=0;if(editK==='sit'){const w0=pc(it.c)&&pc(it.c).st;sitApply(it.c);np=pc(it.c)&&pc(it.c).st==='Passed'&&w0!=='Passed'}
@@ -731,7 +761,7 @@ ${c.token&&c.token.length<16?'<p class="m" style="color:var(--amb)">Your secret 
 ${c.flowUrl?`<p class="m">${c.flowErr?'<span class="s2">Last try failed: '+E(c.flowErr)+'</span>':c.flowAt?'Read from Flow '+ago(c.flowAt)+'. Refreshes every 15 minutes while open.':'Not read yet.'}</p>`:''}
 <label class="switch"><span>Use Flow study data</span><input type="checkbox" ${c.flowOff?'':'checked'} onchange="D.cfg.flowOff=this.checked?0:1;FLD=1;save();render();openSettings()"></label>
 <label class="switch"><span>Count Flow study in learning hours</span><input type="checkbox" ${c.flowHrs===0?'':'checked'} onchange="D.cfg.flowHrs=this.checked?1:0;save();render()"></label>
-<h3>Learning</h3><label class="f"><span>Yearly learning target (hours)</span><input type="number" inputmode="numeric" min="1" value="${+c.cpdT||40}" onchange="D.cfg.cpdT=Math.max(1,+this.value||40);save();render()"></label>
+<h3>Learning</h3><label class="switch"><span>Count attended classes in learning hours</span><input type="checkbox" ${c.clsHrs===0?'':'checked'} onchange="D.cfg.clsHrs=this.checked?1:0;save();render()"></label><label class="f"><span>Yearly learning target (hours)</span><input type="number" inputmode="numeric" min="1" value="${+c.cpdT||40}" onchange="D.cfg.cpdT=Math.max(1,+this.value||40);save();render()"></label>
 <p class="m">ACCA members need 40 units a year, 21 of them verifiable.</p>
 <h3>Backup &amp; recovery</h3>
 <p class="m">Your records live on this device, in your Google Sheet when connected, and in daily Drive backups (last 40 kept).</p>
