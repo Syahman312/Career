@@ -177,7 +177,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <dialog id="st" aria-label="Settings"><div id="stc"></div></dialog>
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
-const APP_V='2026.11.23a',CODE_V=2;
+const APP_V='2026.11.23b',CODE_V=3;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const TABS=['home','goals','acca','journal','profile'],isTab=t=>TABS.includes(t),dlgOpen=()=>!!document.querySelector('dialog[open]');
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv',acca:'papers'},LOGALL=0,TIPO=0;
@@ -450,7 +450,7 @@ if(nc){const x=nc.x,s=nc.s,n=dd(nc.ds);h+=`<div class="c glow"><div class="r"><s
 <b style="font-size:18px;display:block;margin-top:4px">${E(x.title)}</b><div class="m">${DAYN[s.day]} ${fd(nc.ds)} · ${fmtT(s.t1)}–${fmtT(s.t2)}${x.loc?' · '+E(x.loc):''}${x.tut?' · '+E(x.tut):''}</div>
 ${x.link?`<div class="btns mt"><a class="btn sm pri" href="${E(x.link)}" target="_blank" rel="noopener" style="text-decoration:none">Join online class</a></div>`:''}</div>`}
 h+=kpis([['Classes this week',w.n],['Hours this week',num(w.h)],['Attendance',R.r==null?'—':R.r+'%',R.r==null?'':R.r>=80?'s0':R.r>=60?'s1':'s2']]);
-h+=`<div class="btns" style="margin:8px 0"><button class="btn sm pri" onclick="openE('cls')">+ Add class</button><button class="btn sm" onclick="openE('clog')">+ Log a past class</button>${C.length?'<button class="btn sm" onclick="clsICS()">📅 Add to my calendar</button>':''}</div>`;
+h+=`<div class="btns" style="margin:8px 0"><button class="btn sm pri" onclick="openE('cls')">+ Add class</button><button class="btn sm" onclick="openE('clog')">+ Log a past class</button>${C.length&&!(D.cfg.url&&D.cfg.cal&&(D.cfg.sv||0)>=3)?'<button class="btn sm" onclick="clsICS()">📅 Add to my calendar</button>':''}</div>`;
 if(!C.length&&!Lg.length)return h+'<p class="m">No classes yet. Add your tuition or revision classes. A class can meet on several days, each with its own time. Use “Log a past class” for classes you attended before.</p>';
 if(TM.length)h+='<section>'+sh('Did you attend?',TM.length)+'<div class="c">'+TM.slice(0,6).map(q=>`<div class="pc" style="cursor:default"><div style="flex:1;min-width:0"><b>${E(q.x.title)}</b><div class="m">${DAYN[q.s.day].slice(0,3)} ${fd(q.ds)} · ${fmtT(q.s.t1)}–${fmtT(q.s.t2)}</div></div><div class="btns" style="flex:none"><button class="btn sm" style="color:var(--grn)" aria-label="Attended" onclick="markCls('${E(q.x.id)}','${q.ds}','${q.s.t1}','Attended')">✓</button><button class="btn sm" style="color:var(--red)" aria-label="Missed" onclick="markCls('${E(q.x.id)}','${q.ds}','${q.s.t1}','Missed')">✗</button></div></div>`).join('')+(TM.length>6?`<p class="m" style="margin:8px 0 0">${TM.length-6} more from earlier weeks.</p>`:'')+'</div></section>';
 h+=WEEK.map(d=>{const L=C.flatMap(x=>slotsOf(x).filter(s=>s.day===d).map(s=>({x,s}))).sort((a,b)=>a.s.t1.localeCompare(b.s.t1));if(!L.length)return '';const isT=d===td;
@@ -459,7 +459,8 @@ return `<div class="pc" onclick="openE('cls','${E(x.id)}')"${ended?' style="opac
 if(Lg.length){const all=SEG.clsAll,L2=all?Lg:Lg.slice(0,10),ah=clsAttH();
 h+='<section>'+sh('Class history',R.a+' attended · '+num(ah)+' h')+'<div class="c">'+L2.map(l=>`<div class="pc" onclick="openE('clog','${E(l.id)}')"><div style="flex:1;min-width:0"><div>${E(l.title)}</div><div class="m">${[fd(l.date),fmtT(l.t1)+'–'+fmtT(l.t2),l.notes].filter(Boolean).map(E).join(' · ')}</div></div><span class="tag ${l.st==='Attended'?'s0':l.st==='Missed'?'s2':'s4'}">${E(l.st)}</span></div>`).join('')+
 (Lg.length>10?`<button class="btn sm mt" onclick="SEG.clsAll=!SEG.clsAll;render()">${all?'Show less':'Show all '+Lg.length}</button>`:'')+'</div></section>'}
-return h+`<p class="m mt">Attended class hours count toward your learning hours${D.cfg.clsHrs===0?' (turned off in Settings)':''}. “Add to my calendar” makes a calendar file with weekly repeats for every day and time.</p>`}
+const gc=D.cfg.url&&D.cfg.cal&&(D.cfg.sv||0)>=3;
+return h+`<p class="m mt">${gc?'✅ Your classes are kept up to date in the “Career” Google Calendar on every sync, so they also show in Flow’s Today. ':D.cfg.url&&D.cfg.cal?'To keep classes in Google Calendar automatically, update Code.gs to version 3. ':'Turn on Google Calendar in Settings to keep classes there automatically and see them in Flow’s Today. '}Attended class hours count toward your learning hours${D.cfg.clsHrs===0?' (turned off in Settings)':''}.</p>`}
 const icsE=s=>String(s||'').replace(/[\;,]/g,m=>'\\'+m).replace(/\r?\n/g,'\\n'),
 icsFold=l=>{const o=[];while(l.length>73){o.push(l.slice(0,73));l=' '+l.slice(73)}o.push(l);return o.join('\r\n')};
 function clsICS(){const t=today(),st=new Date().toISOString().replace(/[-:]|\.\d+/g,''),L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//NextRole//Classes//EN','CALSCALE:GREGORIAN','X-WR-CALNAME:Classes'];let n=0;
@@ -731,7 +732,7 @@ try{r=await fetch(c.url,{method:'POST',headers:{'Content-Type':'text/plain'},bod
 catch(e){throw new Error(e.name==='AbortError'?'no reply from Google after '+Math.round(t/1000)+' seconds':navigator.onLine===false?'you are offline':'could not reach Google ('+e.message+')')}finally{clearTimeout(tm)}
 const tx=await r.text();let j;try{j=JSON.parse(tx)}catch(e){throw new Error(/<html/i.test(tx)?'Google sent a web page instead of data. Check the web app link and that access is set to Anyone':'unreadable reply from Google')}
 if(j&&j.error)throw new Error(j.error);return j}
-function evs(){const o=[];live('acca').filter(p=>p.st==='Booked'&&p.date).forEach(p=>o.push({key:'acca-'+p.c,date:p.date,title:'ACCA '+p.c+' exam'}));
+function evs(){const o=[];live('cls').forEach(x=>slotsOf(x).forEach(sl=>o.push({key:'cls-'+x.id+'-'+sl.day+sl.t1.replace(':',''),rec:1,title:x.title+(x.c&&!x.title.includes(x.c)?' ('+x.c+')':''),day:sl.day,t1:sl.t1,t2:sl.t2,from:x.date||'',until:x.due||'',loc:x.loc||'',desc:[x.tut?'Tutor: '+x.tut:'',x.link||''].filter(Boolean).join('\n')})));live('acca').filter(p=>p.st==='Booked'&&p.date).forEach(p=>o.push({key:'acca-'+p.c,date:p.date,title:'ACCA '+p.c+' exam'}));
 live('goal').filter(g=>g.due&&+g.pct<100).forEach(g=>o.push({key:'goal-'+g.id,date:g.due,title:'Goal due: '+g.title}));return o}
 async function sync(manual){if(busy||(UP&&!manual))return;busy=1;try{await sync0(manual)}finally{busy=0}}
 async function sync0(manual){const c=D.cfg;if(!c.url){if(manual)msg('Paste your web app link first.');return}
@@ -751,8 +752,8 @@ ${c.token&&c.token.length<16?'<p class="m" style="color:var(--amb)">Your secret 
 <div id="diagOut"></div>
 <h3>Sync</h3><p class="m" id="msg">${c.url?(c.lastAt?'Last synced '+ago(c.lastAt):'Not synced yet')+(c.fails&&c.lastErr?' · '+E(c.lastErr):''):'Not connected. Everything stays on this device until you connect.'}</p>
 <div class="btns"><button class="btn sm" onclick="sync(1).then(openSettings)" ${c.url?'':'disabled'}>↻ Sync now</button></div>
-<label class="switch"><span>Add exams and goal due dates to Google Calendar</span><input type="checkbox" ${c.cal?'checked':''} onchange="D.cfg.cal=this.checked;save();sync(1)"></label>
-<p class="m">They go to a “Career” calendar with alerts 7 days and 1 day before.</p>
+<label class="switch"><span>Add exams, goal due dates and classes to Google Calendar</span><input type="checkbox" ${c.cal?'checked':''} onchange="D.cfg.cal=this.checked;save();sync(1)"></label>
+<p class="m">They go to a “Career” calendar. Exams and goals get alerts 7 days and 1 day before; classes repeat weekly with an alert 30 minutes before${(c.sv||0)&&c.sv<3?' (classes need Code.gs version 3)':''}. Tick the Career calendar in Flow › Settings to see them in Flow’s Today.</p>
 <h3>Flow</h3><p class="m">${FLOW?(FLOW.src==='google'?'Linked through Google':'Linked on this device')+': '+FLOW.n+' ACCA paper'+(FLOW.n===1?'':'s')+', '+num(FLOW.all/60)+' h of study logged.':c.flowOff?'Flow link is off.':'Flow not linked yet.'} NextRole only reads Flow; it never changes it.</p>
 <p class="m">Same browser as Flow: works by itself. iPhone/iPad home-screen apps and other devices: link through Google once on each device. Copy the two values from <b>Flow › Settings</b>.</p>
 <label class="f"><span>Flow Web App URL</span><input id="f_url" value="${E(c.flowUrl||'')}" placeholder="https://script.google.com/macros/s/…/exec" inputmode="url" autocomplete="off" spellcheck="false"></label>
