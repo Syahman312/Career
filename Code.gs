@@ -1,4 +1,4 @@
-// NextRole (formerly Ladder) – Google Apps Script backend, version 2 (adds result slip uploads).
+// NextRole (formerly Ladder) – Google Apps Script backend, version 3 (adds result slips and weekly classes in Google Calendar).
 // Sheets sync, Calendar (exam + goal dates), daily Drive backups and an error log.
 //
 // Setup:
@@ -8,7 +8,7 @@
 // 4) Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Copy the /exec link into NextRole.
 // After edits: Deploy > Manage deployments > pencil icon > Version: New version > Deploy.
 const TOKEN = 'CHANGE_ME';
-const VERSION = 2;
+const VERSION = 3;
 const CAL_NAME = 'Career';
 
 function authorize() {
@@ -92,21 +92,49 @@ function syncAll(b) {
 function syncCal(ev) {
   const cal = CalendarApp.getCalendarsByName(CAL_NAME)[0] || CalendarApp.createCalendar(CAL_NAME);
   const P = PropertiesService.getScriptProperties();
-  const map = JSON.parse(P.getProperty('cal') || '{}'), seen = {};
+  const map = JSON.parse(P.getProperty('cal') || '{}'), seen = {}, tz = cal.getTimeZone();
+  const at = (d, t) => Utilities.parseDate(d + ' ' + t, tz, 'yyyy-MM-dd HH:mm');
+  const drop = m => { try { if (m.r) cal.getEventSeriesById(m.id).deleteEventSeries(); else cal.getEventById(m.id).deleteEvent(); } catch (x) {} };
+  const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
   (Array.isArray(ev) ? ev : []).forEach(e => {
-    if (!e || !/^\d{4}-\d{2}-\d{2}$/.test(e.date)) return;
+    if (!e) return;
     const title = String(e.title || '').slice(0, 200), key = String(e.key || '').slice(0, 120);
+    if (e.rec) {
+      // weekly class: one repeating event per day and time
+      const D = /^\d{4}-\d{2}-\d{2}$/, T = /^\d{2}:\d{2}$/;
+      if (!(+e.day >= 0 && +e.day <= 6) || !T.test(e.t1) || !T.test(e.t2) || e.t2 <= e.t1) return;
+      const from = D.test(e.from) ? e.from : '', until = D.test(e.until) ? e.until : '';
+      const loc = String(e.loc || '').slice(0, 200), desc = String(e.desc || '').slice(0, 1000);
+      seen[key] = 1;
+      const m = map[key], sig = [title, e.day, e.t1, e.t2, from, until, loc, desc].join('|');
+      if (m && m.r && m.s === sig) return;
+      if (m) drop(m);
+      // first date the class meets, from its start date (or the day it was first synced)
+      let s = from || (m && m.st) || today;
+      for (let i = 0; i < 7; i++) {
+        const d = Utilities.parseDate(s, tz, 'yyyy-MM-dd');
+        if (+Utilities.formatDate(d, tz, 'u') % 7 === +e.day) break;
+        s = Utilities.formatDate(new Date(d.getTime() + 36e5 * 26), tz, 'yyyy-MM-dd');
+      }
+      if (until && s > until) { delete map[key]; return; }
+      const W = [CalendarApp.Weekday.SUNDAY, CalendarApp.Weekday.MONDAY, CalendarApp.Weekday.TUESDAY, CalendarApp.Weekday.WEDNESDAY, CalendarApp.Weekday.THURSDAY, CalendarApp.Weekday.FRIDAY, CalendarApp.Weekday.SATURDAY];
+      let rule = CalendarApp.newRecurrence().addWeeklyRule().onlyOnWeekday(W[+e.day]);
+      if (until) rule = rule.until(at(until, '23:59'));
+      const x = cal.createEventSeries(title, at(s, e.t1), at(s, e.t2), rule, { location: loc, description: (desc ? desc + '\n\n' : '') + 'Added by NextRole' });
+      x.removeAllReminders(); x.addPopupReminder(30);
+      map[key] = { id: x.getId(), r: 1, s: sig, st: from || (m && m.st) || today };
+      return;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(e.date)) return;
     seen[key] = 1;
     const m = map[key];
-    if (m && m.d === e.date && m.t === title) return;
-    if (m) { try { cal.getEventById(m.id).deleteEvent(); } catch (x) {} }
+    if (m && !m.r && m.d === e.date && m.t === title) return;
+    if (m) drop(m);
     const x = cal.createAllDayEvent(title, new Date(e.date + 'T00:00:00'), { description: 'Added by NextRole' });
     x.removeAllReminders(); x.addPopupReminder(7 * 24 * 60); x.addPopupReminder(24 * 60);
     map[key] = { id: x.getId(), d: e.date, t: title };
   });
-  Object.keys(map).forEach(k => {
-    if (!seen[k]) { try { cal.getEventById(map[k].id).deleteEvent(); } catch (x) {} delete map[k]; }
-  });
+  Object.keys(map).forEach(k => { if (!seen[k]) { drop(map[k]); delete map[k]; } });
   P.setProperty('cal', JSON.stringify(map));
 }
 
