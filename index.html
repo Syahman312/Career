@@ -102,6 +102,7 @@ details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-
 .hi{font-size:15px;margin:14px 2px 0;color:var(--mu)}.hi b{color:var(--tx)}
 .sbar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--bd2);margin:10px 0}.sbar i{display:block;height:100%}
 .tl{position:relative;padding-left:48px;margin-top:12px}
+.btn.more{display:block;margin:12px auto 0}
 .tl:before{content:"";position:absolute;left:19px;top:0;bottom:0;width:8px;background:var(--card);border:1px solid var(--bd2);border-width:0 1px}
 .tl:after{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:repeating-linear-gradient(var(--fa) 0 8px,transparent 8px 16px)}
 .mh{background:var(--c2);border:1px solid var(--bd2);border-radius:12px;padding:10px 12px;margin:16px 0 4px;letter-spacing:.06em}
@@ -178,7 +179,7 @@ nav .side-extra{display:flex;margin-top:14px;border-top:1px solid var(--bd2);bor
 <input id="imp" type="file" accept=".json,application/json" hidden onchange="imp(this)">
 <script>
 try{if(localStorage.getItem('nr.navc')==='1')document.body.classList.add('navc')}catch(e){}
-const APP_V='2026.11.27',CODE_V=4;
+const APP_V='2026.11.27.2',CODE_V=4;
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const TABS=['home','goals','acca','career','journal','profile'],isTab=t=>TABS.includes(t),dlgOpen=()=>!!document.querySelector('dialog[open]');
 let D={items:[],cfg:{url:'',token:''}},tab='home',VER=0,LOG=[],T,TT,UP=0,busy=0,editK='',editId=null,GF='All',SEG={journal:'win',profile:'cv',acca:'papers',career:'board'},LOGALL=0,TIPO=0;
@@ -320,12 +321,12 @@ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dat
 $('#fab').hidden=tab==='profile'&&SEG.profile==='cv';
 $('#v').innerHTML=viewOf(tab)}
 const pushTab=()=>{try{history.pushState(null,'','#'+tab)}catch(e){}};
-function go(t,np,sw){if(!isTab(t))t='home';if(!np&&location.hash!=='#'+t)try{history.pushState(null,'','#'+t)}catch(e){}tab=t;fab(0);render();const v=$('#v');v.classList.remove('an');if(!sw){void v.offsetWidth;v.classList.add('an');setTimeout(()=>v.classList.remove('an'),350)}scrollTo(0,0)}
+function go(t,np,sw){if(!isTab(t))t='home';if(!np&&location.hash!=='#'+t)try{history.pushState(null,'','#'+t)}catch(e){}if(tab!==t)MORE={};tab=t;fab(0);render();const v=$('#v');v.classList.remove('an');if(!sw){void v.offsetWidth;v.classList.add('an');setTimeout(()=>v.classList.remove('an'),350)}scrollTo(0,0)}
 function npill(){const p=$('nav .npill'),b=$('nav button.on');if(!p)return;if(!b||!b.offsetHeight){p.style.opacity=0;return}const f=!p.dataset.ok;if(f)p.style.transition='none';p.style.opacity=1;p.style.top=b.offsetTop+'px';p.style.height=b.offsetHeight+'px';if(f){void p.offsetHeight;p.style.transition='';p.dataset.ok=1}}
 function navT(v){const c=v===undefined?!document.body.classList.contains('navc'):!!v;document.body.classList.toggle('navc',c);try{localStorage.setItem('nr.navc',c?'1':'0')}catch(e){}if(!c)setTimeout(()=>{const b=$('nav button.on');if(b&&matchMedia('(min-width:1024px)').matches)b.focus({preventScroll:true})},280)}
 addEventListener('resize',()=>npill());
 const viewOf=t=>safe({home,goals:goalsTab,acca:accaTab,career:careerTab,journal,profile}[t]||home);
-function setSeg(k,v){SEG[k]=v;render()}
+function setSeg(k,v){SEG[k]=v;MORE={};render()}
 function fab(o){const f=$('#fab'),m=$('#fm'),on=o===undefined?m.hidden:!!o;m.hidden=!on;f.classList.toggle('open',on)}
 
 function home(){const m=me(),a=accaPct(),G=live('goal'),og=G.filter(g=>+g.pct<100),gp=G.length?sum(G,'pct')/G.length:0,y=String(new Date().getFullYear()),
@@ -392,19 +393,22 @@ function saveEx(){let n=0;const now=Date.now();EXP.forEach(c=>{const p=pc(c),el=
 if(want&&p.st!=='Exempt'){p.st='Exempt';p.date='';p.score='';p.updated=now}else if(!want&&p.st==='Exempt'){p.st='Not started';p.updated=now}if(want)n++});
 const m=get('me'),b=$('#x_b').value.trim();if(m&&(m.exb||'')!==b){m.exb=b;m.updated=now}$('#st').close();commit();toast(n?n+' exemption'+(n>1?'s':'')+' saved':'Exemptions cleared')}
 
-function tline(a,row,head){const g={};a.forEach(i=>{const k=(i.date||'').slice(0,7)||'—';(g[k]=g[k]||[]).push(i)});
-return '<div class="tl">'+Object.keys(g).sort().reverse().map(k=>`<div class="mh"><div class="r"><span class="m">${k==='—'?'NO DATE':new Date(k+'-01T00:00').toLocaleString('en-GB',{month:'long',year:'numeric'}).toUpperCase()}</span><b>${head(g[k])}</b></div></div>`+g[k].map(row).join('')).join('')+'</div>'}
+// long lists: show the newest ~40 rows, then a "Show older" button
+let MORE={};const moreB=(k,n)=>`<button class="btn sm more" onclick="MORE['${k}']=1;render()">Show ${n} more</button>`;
+function tline(a,row,head,mk){const g={};a.forEach(i=>{const k=(i.date||'').slice(0,7)||'—';(g[k]=g[k]||[]).push(i)});
+let K=Object.keys(g).sort().reverse(),left=0;if(mk&&!MORE[mk]){let n=0,c=0;while(c<K.length&&n<30)n+=g[K[c++]].length;left=a.length-n;K=K.slice(0,c)}
+return '<div class="tl">'+K.map(k=>`<div class="mh"><div class="r"><span class="m">${k==='—'?'NO DATE':new Date(k+'-01T00:00').toLocaleString('en-GB',{month:'long',year:'numeric'}).toUpperCase()}</span><b>${head(g[k])}</b></div></div>`+g[k].map(row).join('')).join('')+'</div>'+(left?moreB(mk,left):'')}
 const cico=t=>({'Self-study':'✏️',Course:'🎓',Webinar:'💻',Book:'📖','On-the-job':'🛠️',Mentoring:'🤝',Conference:'🎤'}[t]||'📚');
 function journal(){const s=SEG.journal,y=String(new Date().getFullYear()),srt=a=>a.sort((x,z)=>(z.date||'').localeCompare(x.date||''));
 let h=segBar('journal',[['win','🏆 Wins'],['cpd','📚 Learning'],['rev','📅 Monthly review'],['apr','📋 Appraisal']]);if(s==='rev')return h+revView();if(s==='apr')return h+aprView();
 if(s==='win'){const W=srt(live('win')),mo=today().slice(0,7);
 h+=kpis([['This month',W.filter(w=>(w.date||'').startsWith(mo)).length],['This year',W.filter(w=>(w.date||'').startsWith(y)).length],['All time',W.length]])+
 '<p class="m">For appraisals and your resume. Say what changed: time saved, RM, accuracy, people helped.</p>'+
-(W.length?tline(W,w=>`<div class="ti" onclick="openE('win','${E(w.id)}')"><span class="ic w">🏆</span><div class="r"><b>${E(w.title)}</b><span class="m">${sd(w.date)}</span></div>${w.impact?`<div class="m">${E(w.impact)}</div>`:''}</div>`,a=>a.length+' win'+(a.length>1?'s':'')):'<p class="m mt">No wins yet. Tap + to log one this week.</p>')}
+(W.length?tline(W,w=>`<div class="ti" onclick="openE('win','${E(w.id)}')"><span class="ic w">🏆</span><div class="r"><b>${E(w.title)}</b><span class="m">${sd(w.date)}</span></div>${w.impact?`<div class="m">${E(w.impact)}</div>`:''}</div>`,a=>a.length+' win'+(a.length>1?'s':''),'win'):'<p class="m mt">No wins yet. Tap + to log one this week.</p>')}
 else{const C=srt(live('cpd')),CY=C.filter(c=>(c.date||'').startsWith(y)),fy=flowYrH(y),cy=clsYrH(y),hy=sum(CY,'hrs')+fy+cy,vy=sum(CY.filter(c=>c.ver),'hrs'),tg=+D.cfg.cpdT||40;
 h+=`<div class="c glow mt"><div class="r"><b>${y} learning</b><b>${num(hy)} / ${tg} h</b></div><div class="bar"><i style="width:${Math.min(100,hy/tg*100)}%;${hy>=tg?'background:var(--grn)':''}"></i></div><div class="m">${cy?num(cy)+' h from classes · ':''}${fy?num(fy)+' h study from Flow · ':''}${num(vy)} h verifiable · ${hy>=tg?'Target met 🎉':num(tg-hy)+' h to go'} · change target in Settings</div></div>`+
 kpis([['Entries',CY.length],['This month',num(sum(C.filter(c=>(c.date||'').startsWith(today().slice(0,7))),'hrs'))+' h'],['All time',num(sum(C,'hrs'))+' h']])+
-(C.length?tline(C,c=>`<div class="ti" onclick="openE('cpd','${E(c.id)}')"><span class="ic">${cico(c.type)}</span><div class="r"><b>${E(c.title)}</b><b>${num(c.hrs)} h</b></div><div class="r"><span class="m">${E(c.type||'')}${c.ver?' · <span class="s0">Verifiable</span>':''}</span><span class="m">${sd(c.date)}</span></div></div>`,a=>num(sum(a,'hrs'))+' h'):'<p class="m mt">Nothing logged yet. Tap + to add a course, book or webinar.</p>')}
+(C.length?tline(C,c=>`<div class="ti" onclick="openE('cpd','${E(c.id)}')"><span class="ic">${cico(c.type)}</span><div class="r"><b>${E(c.title)}</b><b>${num(c.hrs)} h</b></div><div class="r"><span class="m">${E(c.type||'')}${c.ver?' · <span class="s0">Verifiable</span>':''}</span><span class="m">${sd(c.date)}</span></div></div>`,a=>num(sum(a,'hrs'))+' h','cpd'):'<p class="m mt">Nothing logged yet. Tap + to add a course, book or webinar.</p>')}
 return h}
 
 function profile(){const s=SEG.profile,T=[['cv','📄 Resume'],['ats','🔍 ATS check'],['jobs','💼 Jobs'],['edu','🎓 Education'],['skills','⭐ Skills']];
@@ -759,7 +763,7 @@ h+=kpis([['Active',act.length],['Interviews',A.filter(a=>a.st==='Interview').len
 if(FU.length)h+=`<div class="c" style="border-color:var(--amb)"><b>📨 Time to follow up</b><div class="m">No reply after a week. A short, polite email to the recruiter helps.</div>${FU.map(a=>`<div class="pc" onclick="openE('app','${E(a.id)}')"><div style="flex:1">${E(a.title)} · ${E(a.co)}</div><span class="m">${Math.abs(dd(a.date))} d</span></div>`).join('')}</div>`;
 h+=`<button onclick="openE('app')" style="width:100%">+ Add job</button><div class="fr">${['Active','All',...APPST].map(s=>`<span class="chip2${s===BF?' on':''}" onclick="BF='${s}';render()">${s} ${s==='Active'?act.length:s==='All'?A.length:A.filter(a=>a.st===s).length}</span>`).join('')}</div>`;
 if(!F.length)h+='<p class="m mt">'+(A.length?'Nothing here.':'Save jobs you like, then move them along: Applied → Interview → Offer. Paste the job post link and the job description to check your resume against it.')+'</p>';
-grp.forEach(s=>{const L=F.filter(a=>a.st===s).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9')||(b.date||'').localeCompare(a.date||''));if(L.length)h+='<section>'+sh(s,L.length)+L.map(appCard).join('')+'</section>'});
+grp.forEach(s=>{const L=F.filter(a=>a.st===s).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9')||(b.date||'').localeCompare(a.date||''));if(L.length)h+='<section>'+sh(s,L.length)+(MORE['b'+s]?L:L.slice(0,25)).map(appCard).join('')+(L.length>25&&!MORE['b'+s]?moreB('b'+s,L.length-25):'')+'</section>'});
 return h}
 function appSt(id,v){const a=get(id);if(!a||a.st===v)return;const w=a.st;a.st=v;if(v==='Applied'&&!a.date)a.date=today();a.updated=Date.now();commit();
 if(v==='Interview'&&!(a.due&&dd(a.due)>=0)){toast('Add the interview date');openE('app',id)}else if(v==='Accepted'&&w!=='Accepted')accepted(a);else toast('Moved to '+v)}
@@ -776,7 +780,7 @@ const QBANK=['Tell me about yourself.','Why do you want this role?','Why are you
 let STARP=null;
 const starOk=s=>[s.sitn,s.task,s.act,s.rslt].map(v=>!!String(v||'').trim());
 function prepView(){const S=live('star').sort((a,b)=>(b.updated||0)-(a.updated||0)),used=new Set(S.map(s=>s.ref).filter(Boolean)),W=live('win').filter(w=>!used.has(w.id)).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,4),
-have=new Set(S.map(s=>s.title.trim().toLowerCase())),Q=QBANK.filter(q=>!have.has(q.toLowerCase()));
+have=new Set(S.map(s=>(s.title||'').trim().toLowerCase())),Q=QBANK.filter(q=>!have.has(q.toLowerCase()));
 let h=kpis([['Answers',S.length],['Complete STAR',S.filter(s=>starOk(s).every(Boolean)).length,'s0'],['From wins',S.filter(s=>s.ref).length]]);
 h+=`<div class="btns" style="margin-bottom:8px"><button class="btn sm pri" onclick="openE('star')">+ Add answer</button><button class="btn sm" onclick="practise()"${S.length||Q.length?'':' disabled'}>🎲 Practise</button></div>
 <p class="m">Use STAR: <b>S</b>ituation, <b>T</b>ask, <b>A</b>ction (what you did), <b>R</b>esult (with numbers). Aim for about 2 minutes when you say it.</p>`;
@@ -787,7 +791,7 @@ return h}
 function starQ(i){STARP={title:QBANK[i],type:/salary|yourself|why|five years|weakness/i.test(QBANK[i])?'Motivation':/consolidation|intercompany|close/i.test(QBANK[i])?'Technical':'Behavioural'};openE('star');STARP=null}
 function starFromWin(id){const w=get(id);if(!w)return;STARP={title:'Tell me about a time you '+w.title.charAt(0).toLowerCase()+w.title.slice(1).replace(/\.$/,'')+'.',type:'Behavioural',ref:w.id,act:w.title,rslt:w.impact||''};openE('star');STARP=null}
 let PQ=[];
-function practise(){const S=live('star');PQ=[...S.map(s=>s.id),...QBANK.filter(q=>!S.some(s=>s.title.trim().toLowerCase()===q.toLowerCase()))].sort(()=>Math.random()-.5);pNext()}
+function practise(){const S=live('star');PQ=[...S.map(s=>s.id),...QBANK.filter(q=>!S.some(s=>(s.title||'').trim().toLowerCase()===q.toLowerCase()))].sort(()=>Math.random()-.5);pNext()}
 function pNext(){if(!PQ.length)return practise();const q=PQ.shift(),s=get(q),d=$('#st');
 $('#stc').innerHTML=`<h2>Practise</h2><p class="m">Say your answer out loud, then check it.</p><div class="c glow" style="font-size:18px;font-weight:650">${E(s?s.title:q)}</div><div id="pans" hidden>${s?[['Situation',s.sitn],['Task',s.task],['Action',s.act],['Result',s.rslt]].map(([l,v])=>`<div class="mt"><b class="m">${l}</b><div style="white-space:pre-wrap">${E(v||'—')}</div></div>`).join(''):'<p class="m">No answer saved for this one yet.</p>'}</div>
 <div class="row mt"><button type="button" class="g" onclick="$('#st').close()">Done</button><button type="button" class="g" id="pshow" onclick="$('#pans').hidden=false;this.hidden=true">Show answer</button><button type="button" onclick="pNext()">Next</button></div>`;if(!d.open)d.showModal()}
